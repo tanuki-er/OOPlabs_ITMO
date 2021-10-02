@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Isu.Services;
-using Isu.Tools;
 using NUnit.Framework;
 
 namespace Isu.Tests
@@ -12,9 +11,9 @@ namespace Isu.Tests
         private IIsuService _isuService;
         
         private string group1 = "01";
-        private string group2 = "02";
+        private string _group2 = "02";
         private string name = "mika";
-        private Dictionary<Group, Student> _dictionary { get;  }
+        private Dictionary<Group, Student> Dictionary { get;  }
 
         [SetUp]
         public void Setup()
@@ -25,52 +24,36 @@ namespace Isu.Tests
         [Test]
         public void AddStudentToGroup_StudentHasGroupAndGroupContainsStudent()
         {
-            
-            var newGroup = _isuService.AddGroup(group1);
-            var newStudent = _isuService.AddStudent(newGroup, name);
+            Group newGroup = _isuService.AddGroup(group1);
+            Student newStudent = _isuService.AddStudent(newGroup, name);
 
-            _dictionary.Add(newGroup, newStudent);
-        
-          
-            foreach (var VARIABLE in _dictionary)
-            {
-                if (VARIABLE.Value == newStudent && VARIABLE.Key != null) Assert.Pass();
-            }
-
-            foreach (var VARIABLE in _dictionary)
-            {
-                if (VARIABLE.Key == newGroup && VARIABLE.Value.Equals(newStudent)) Assert.Pass();
-            }
-            
+            if (_isuService.FindStudents("M3201") != null) Assert.Pass();
         }
 
         [Test]
         public void ReachMaxStudentPerGroup_ThrowException()
         {
-            //private Dictionary<Group, Student> _dictionary;
-            Assert.Catch<IsuException>(() =>
+            Assert.Catch<Exception>(() =>
             { 
-                Dictionary<Group, Student> _dictionary1 = null;
+                Dictionary<Group, Student> dictionary1 = null;
                 for (int i = 0; i < 30; i++)
                 {
-                    var newGroup = _isuService.AddGroup(group1);
-                    var newStudent = _isuService.AddStudent(newGroup, name);
-                    //_dictionary1.Add(newGroup, newStudent);
-                    
+                    Group newGroup = _isuService.AddGroup(group1);
+                    Student newStudent = _isuService.AddStudent(newGroup, name);
+                    dictionary1.Add(newGroup, newStudent);
                 }
-               
             });
         }
 
         [Test]
         public void CreateGroupWithInvalidName_ThrowException()
         {
-            Assert.Catch<IsuException>(() =>
+            Assert.Catch<Exception>(() =>
             {
-                Dictionary<Group, Student> _dictionary1 = _dictionary;
+                Dictionary<Group, Student> _dictionary1 = Dictionary;
                 string invalidGroup = "000001";
-                var newGroup = _isuService.AddGroup(invalidGroup);
-                var newStudent = _isuService.AddStudent(newGroup, name);
+                Group newGroup = _isuService.AddGroup(invalidGroup);
+                Student newStudent = _isuService.AddStudent(newGroup, name);
                 _dictionary1.Add(newGroup, newStudent);
             });
         }
@@ -78,20 +61,19 @@ namespace Isu.Tests
         [Test]
         public void TransferStudentToAnotherGroup_GroupChanged()
         {
-           Assert.Catch<IsuException>(() =>
+           Assert.Catch<Exception>(() =>
            {
-               Dictionary<Group, Student> _dictionary;
+               Dictionary<Group, Student> dictionary;
+               string oldgroup = group1;
+               dictionary = null;
+               Group oldGroup = _isuService.AddGroup(oldgroup);
+               Group newGroup = _isuService.AddGroup(group1);
+               Student newStudent = _isuService.AddStudent(oldGroup, name);
 
-               var Oldgroup = group1;
-               _dictionary = null;
-               var oldGroup = _isuService.AddGroup(Oldgroup);
-               var newGroup = _isuService.AddGroup(group1);
-               var newStudent = _isuService.AddStudent(oldGroup, name);
-
-               _dictionary.Add(oldGroup, newStudent);
-               foreach (var VARIABLE in _dictionary)
+               dictionary.Add(oldGroup, newStudent);
+               foreach (KeyValuePair<Group, Student> variable in dictionary)
                {
-                   if (VARIABLE.Value == newStudent) continue;
+                   if (variable.Value == newStudent) continue;
                    _isuService.ChangeStudentGroup(newStudent, newGroup);
                }
            });

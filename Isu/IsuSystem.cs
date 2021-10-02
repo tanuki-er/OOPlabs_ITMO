@@ -1,143 +1,134 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
 using Isu.Services;
 
 namespace Isu
 {
     public class IsuSystem : IIsuService
-    { 
-        private List<Student> SList { get; set; }
-        private List<Group> GList { get; set; }
-        private Dictionary<Group, Student> _isuList { get; }
-
-    public IsuSystem()
     {
-        _isuList = new Dictionary<Group, Student>();
-        GList = new List<Group>();
-        SList = new List<Student>();
-    }
-    
-
-    public Group AddGroup(string name)
-    {
-        if (name.Length != 2) throw new Exception("invalid group number");
-        var year = 2;
-        if (year > 5) throw new Exception("invalid group name");
-        var newGroup = new Group(year.ToString(), name);
-        GList.Add(newGroup);
-        return newGroup;
-    }
-
-    public Student AddStudent(Group group, string name)
-    {
-        var newStudent = new Student(name);
-
-        foreach (var VARIABLE in _isuList)
+        public IsuSystem()
         {
-            if (VARIABLE.Key == group) continue;
-            var count = 0;
-            foreach (var VARIABLe in _isuList.Values)
-            {
-                if (VARIABLe != null && count < 30) 
-                    count++;
-                else if (count >= 30) 
-                    throw new Exception("Countable limit of students in this group");
-            }
-        }        
-        
-        _isuList.Add(group, newStudent);
-        SList.Add(newStudent);
-        return newStudent;
-    }
-
-    public Student GetStudent(Guid id)
-    {
-        foreach (var VARIABLE in SList)
-        {
-            if (VARIABLE.GetId(VARIABLE) == id) return VARIABLE;
+            IsuList = new Dictionary<Group, Student>();
+            GList = new List<Group>();
+            SList = new List<Student>();
         }
 
-        throw new Exception("Student can't be get");
-    }
-
-    public Student FindStudent(string name)
-    {
-        foreach (var VARIABLE in SList)
+        private List<Student> SList { get; set; }
+        private List<Group> GList { get; set; }
+        private Dictionary<Group, Student> IsuList { get; }
+        public Group AddGroup(string name)
         {
-            if (VARIABLE.GetName(VARIABLE) == name) return VARIABLE;
-        }    
-        throw new Exception("Student can't be find");
-    }
+            if (name.Length != 2) throw new Exception("invalid group number");
+            int year = 2;
+            var newGroup = new Group(year.ToString(), name);
+            GList.Add(newGroup);
+            return newGroup;
+        }
 
-    
-        public List<Student> FindStudents(string groupName)
+        public Student AddStudent(Group group, string name)
         {
-            var ReturnList = new List<Student>();
-            foreach (var VARIABLE in _isuList)
+            var newStudent = new Student(name);
+            foreach (KeyValuePair<Group, Student> variable in IsuList)
             {
-                if (VARIABLE.Key.GetCourseNumber(VARIABLE.Key).GetCourse() + VARIABLE.Key.GetGroupNumber(VARIABLE.Key) == groupName)
+                if (variable.Key == group) continue;
+                int count = 0;
+                foreach (Student variabLe in IsuList.Values)
                 {
-                    ReturnList.Add(VARIABLE.Value);
+                    if (variabLe != null && count < 30) count++;
+                    else if (count >= 30) throw new Exception("Countable limit of students in this group");
                 }
             }
-            return ReturnList;
+
+            IsuList.Add(group, newStudent);
+            SList.Add(newStudent);
+            return newStudent;
+        }
+
+        public Student GetStudent(Guid id)
+        {
+            foreach (Student variable in SList)
+            {
+                if (variable.GetId(variable) == id) return variable;
+            }
+
+            throw new Exception("Student can't be get");
+        }
+
+        public Student FindStudent(string name)
+        {
+            foreach (Student variable in SList)
+            {
+                if (variable.GetName(variable) == name) return variable;
+            }
+
+            throw new Exception("Student can't be find");
+        }
+
+        public List<Student> FindStudents(string groupName)
+        {
+            var returnList = new List<Student>();
+            foreach (KeyValuePair<Group, Student> variable in IsuList)
+            {
+                if (variable.Key.GetCourseNumber(variable.Key).GetCourse() + variable.Key.GetGroupNumber(variable.Key) == groupName)
+                {
+                    returnList.Add(variable.Value);
+                }
+            }
+
+            return returnList;
         }
 
         public List<Student> FindStudents(CourseNumber courseNumber)
         {
-            var ReturnList = new List<Student>();
-            foreach (var VARIABLE in _isuList)
+            var returnList = new List<Student>();
+            foreach (KeyValuePair<Group, Student> variable in IsuList)
             {
-                if (VARIABLE.Key.GetCourseNumber(VARIABLE.Key) == courseNumber)
+                if (variable.Key.GetCourseNumber(variable.Key) == courseNumber)
                 {
-                    ReturnList.Add(VARIABLE.Value);
+                    returnList.Add(variable.Value);
                 }
             }
-            return ReturnList;
+
+            if (returnList == null) throw new Exception("This group hasn't students");
+            return returnList;
         }
-        
-//        
-      public List<Group> FindGroups(CourseNumber courseNumber)
-      {
-          var ReturnList = new List<Group>();
-          foreach (var VARIABLE in _isuList)
-          {
-              if (VARIABLE.Key.GetCourseNumber(VARIABLE.Key) == courseNumber)
-              {
-                  ReturnList.Add(VARIABLE.Key);
-              }
-          }
 
-          return ReturnList;
-      }
-      
-
-
-      public void ChangeStudentGroup(Student student, Group newGroup)
-      {
-          foreach (var VARIABLE in _isuList)
-          {
-              if (VARIABLE.Value == student) continue;
-              if (VARIABLE.Key == newGroup) throw new Exception("ERROR: old group == new group");
-              _isuList.Remove(VARIABLE.Key);
-              _isuList.Add(newGroup, student);
-          }
-      }
-      
-      public Group FindGroup(string groupName)
+        public List<Group> FindGroups(CourseNumber courseNumber)
         {
-            foreach (var VARIABLE in _isuList.Keys)
+            var returnList = new List<Group>();
+            foreach (KeyValuePair<Group, Student> variable in IsuList)
             {
-                if ( VARIABLE.GetCourseNumber(VARIABLE).GetCourse() + VARIABLE.GetGroupNumber(VARIABLE) == groupName)
+                if (variable.Key.GetCourseNumber(variable.Key) == courseNumber)
                 {
-                    return VARIABLE;
+                    returnList.Add(variable.Key);
                 }
             }
+
+            return returnList;
+        }
+
+        public void ChangeStudentGroup(Student student, Group newGroup)
+        {
+            foreach (KeyValuePair<Group, Student> variable in IsuList)
+            {
+                if (variable.Value == student) continue;
+                if (variable.Key == newGroup) throw new Exception("ERROR: old group == new group");
+                IsuList.Remove(variable.Key);
+                IsuList.Add(newGroup, student);
+            }
+        }
+
+        public Group FindGroup(string groupName)
+        {
+            foreach (Group variable in IsuList.Keys)
+            {
+                if (variable.GetCourseNumber(variable).GetCourse() + variable.GetGroupNumber(variable) == groupName)
+                {
+                    return variable;
+                }
+            }
+
             throw new Exception("Group can't be find");
         }
     }
 }
-

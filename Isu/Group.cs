@@ -4,20 +4,15 @@ namespace Isu
 {
     public class Group
     {
-        private string groupNumber { get; set; }
-        private CourseNumber courseNumber { get; set; }
-
-
-
         public Group(string year, string groupNumber)
         {
-
-            courseNumber = new CourseNumber("M3", year);
-            this.groupNumber = groupNumber;
+            CourseNumber = new CourseNumber("M3", year);
+            this.GroupNumber = groupNumber;
         }
 
-        public string GetGroupNumber(Group group) => group.groupNumber;
-
-        public CourseNumber GetCourseNumber(Group group) => group.courseNumber;
+        private string GroupNumber { get; set; }
+        private CourseNumber CourseNumber { get; set; }
+        public string GetGroupNumber(Group group) => group.GroupNumber;
+        public CourseNumber GetCourseNumber(Group group) => group.CourseNumber;
     }
 }

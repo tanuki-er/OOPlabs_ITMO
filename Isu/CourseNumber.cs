@@ -2,21 +2,15 @@
 {
     public class CourseNumber
     {
-        private string faculty { get; set; }
-        private string courseNumber { get; set; }
-
         public CourseNumber(string faculty, string courseNumber)
         {
-            this.faculty = faculty;
-            this.courseNumber = courseNumber;
+            Faculty = faculty;
+            Course = courseNumber;
         }
 
-        public string GetCourse() => faculty + courseNumber;
-        
-        public override string ToString()
-        {
-            return faculty + courseNumber;
-        }
-
+        private string Faculty { get; set; }
+        private string Course { get; set; }
+        public string GetCourse() => Faculty + Course;
+        public override string ToString() => Faculty + Course;
     }
 }

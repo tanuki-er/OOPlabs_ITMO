@@ -4,22 +4,17 @@ using System.Dynamic;
 
 namespace Isu
 {
-    public class Student // abstract?
+    public class Student
     {
-
-        private Guid id { get; set; }
-        private string studentName { get; set; }
-        //private List<Student> _studentsList { get; set; }
-        
         public Student(string studentName)
         {
-            id = Guid.NewGuid();
-            this.studentName = studentName;
+            Id = Guid.NewGuid();
+            StudentName = studentName;
         }
 
-        public Guid GetId(Student student) => student.id;
-        
-        public string GetName(Student student) => student.studentName;
-        
+        private Guid Id { get; set; }
+        private string StudentName { get; set; }
+        public Guid GetId(Student student) => student.Id;
+        public string GetName(Student student) => student.StudentName;
     }
 }
