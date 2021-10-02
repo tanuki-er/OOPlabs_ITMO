@@ -3,7 +3,7 @@ using Shops.ShopCenter;
 
 namespace Shops
 {
-    public class Service : IService
+    public class Service //: IService
     {
         private Dictionary<ShopCenter.Shop, Product.Product> _dictionary { get; set; }
 

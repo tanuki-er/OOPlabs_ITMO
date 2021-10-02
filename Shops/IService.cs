@@ -1,17 +1,20 @@
-﻿namespace Shops
+﻿using System.Collections.Generic;
+
+namespace Shops
 {
     public interface IService
     {
-        ShopCenter.Shop AddShop(string shopName, string address);
-        Product.Product AddProduct(string productName, float price);
-        Product.Product AddProduct(string productName);
+        void AddShop(ShopCenter.Shop shop);
+        void AddProduct(ShopCenter.Shop shop, Product.Product product);
+        //Product.Product AddProduct(string productName);
         
-        Product.Product AddPrice(float price);
-        Product.Product DeleteProduct();
-
-        void Deliver();
-//        void BuyProduct();
-        void DeleteProducts();
+        void ChangePrice(Product.Product product, float newPrice);
+        
+        
+        void DeleteProduct(Product.Product product);
+        void AddProducts(List<Product.Product> products);
+//        void BuyProduct(); 
+        void DeleteProducts(List<Product.Product> products);
         
     }
 }

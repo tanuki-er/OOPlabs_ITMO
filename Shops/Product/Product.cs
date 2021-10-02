@@ -16,11 +16,23 @@ namespace Shops.Product
             ProductCounter = 1;
             ProductPrice = productPrice;
         }
-
+        
+        public Product(string productName)
+        {
+            ProductId = Guid.NewGuid();
+            ProductName = productName;
+            ProductCounter = 1;
+            ProductPrice = 0;
+        }
+        
         public void SetCounter(double counter)
         {
             ProductCounter += counter;
         }
-        
+
+        public void ChangePrice(Product product, float newPrice)
+        {
+            product.ProductPrice = newPrice;
+        }
     }
 }

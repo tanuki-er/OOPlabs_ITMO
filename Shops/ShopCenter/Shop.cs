@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Shops.ShopCenter
@@ -19,38 +20,54 @@ namespace Shops.ShopCenter
             Dictionary = new Dictionary<Shop, Product.Product>();
         }
 
-
-        public Shop AddShop(string shopName, string address) => new Shop(shopName, address);
-
-
-        public Product.Product AddProduct(string productName, float price)
+        public void AddShop(Shop shop)
         {
-            throw new NotImplementedException();
+            Dictionary.Add(shop, null);
         }
 
-        public Product.Product AddProduct(string productName)
+        public void AddProduct(Shop shop, Product.Product product)
         {
-            throw new NotImplementedException();
+
+            foreach (var VARIABLE in Dictionary)
+            {
+                if (shop == VARIABLE.Key)
+                    Dictionary.Add(shop, product);
+            }
+
+            //throw new Exception("Shop wasn't add to dictionary");
+            // try|catch . . .  
+        }
+        
+
+        public void ChangePrice(Product.Product product, float newPrice)
+        {
+            product.ChangePrice(product, newPrice);
         }
 
-        public Product.Product AddPrice(float price)
+        public void DeleteProduct(Product.Product product)
         {
-            throw new NotImplementedException();
+            foreach (var VARIABLE in Dictionary.Values)
+            {
+                if (Dictionary.ContainsValue(product)) Dictionary.Count();//
+            }
+            
         }
 
-        public Product.Product DeleteProduct()
+        public void AddProducts(List<Product.Product> products)
         {
-            throw new NotImplementedException();
+            
+            // отсюда до эд, добавлять их поштучно
         }
 
-        public void Deliver()
+        public void DeleteProducts(List<Product.Product> products)
         {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteProducts()
-        {
-            throw new NotImplementedException();
+            foreach (var VARIABLE in products)
+            {
+                if (Dictionary.ContainsValue(VARIABLE))
+                {
+                    DeleteProduct(VARIABLE);
+                }
+            }
         }
     }
 }
