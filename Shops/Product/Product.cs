@@ -30,9 +30,13 @@ namespace Shops.Product
             ProductCounter += counter;
         }
 
-        public void ChangePrice(Product product, float newPrice)
+        public void SetPrice(Product product, float newPrice)
         {
             product.ProductPrice = newPrice;
         }
+
+        public float GetPrice(Product product) => product.ProductPrice;
+        public string GetProductName(Product product) => product.ProductName;
+        public double GetCounter(Product product) => product.ProductCounter;
     }
 }

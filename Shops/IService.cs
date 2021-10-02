@@ -4,7 +4,8 @@ namespace Shops
 {
     public interface IService
     {
-        void AddShop(ShopCenter.Shop shop);
+        //void AddShop(ShopCenter.Shop shop);
+        //ShopCenter.Shop CreateShop(string name, string address);
         void AddProduct(ShopCenter.Shop shop, Product.Product product);
         //Product.Product AddProduct(string productName);
         

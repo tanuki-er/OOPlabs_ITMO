@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -7,11 +8,6 @@ namespace Shops.ShopCenter
 {
     public class Shop : IService
     {
-        private Guid ShopId { get; set; }
-        private string ShopName { get; set; }
-        private string Address { get; set; }
-        private Dictionary<Shop, Product.Product> Dictionary { get; }
-
         public Shop(string shopName, string address)
         {
             ShopId = Guid.NewGuid();
@@ -20,37 +16,39 @@ namespace Shops.ShopCenter
             Dictionary = new Dictionary<Shop, Product.Product>();
         }
 
-        public void AddShop(Shop shop)
-        {
-            Dictionary.Add(shop, null);
-        }
-
+        private Guid ShopId { get; set; }
+        private string ShopName { get; set; }
+        private string Address { get; set; }
+        private Dictionary<Shop, Product.Product> Dictionary { get; }
+        
+        
         public void AddProduct(Shop shop, Product.Product product)
         {
-
-            foreach (var VARIABLE in Dictionary)
+            foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
             {
-                if (shop == VARIABLE.Key)
-                    Dictionary.Add(shop, product);
+                if ((variable.Key == shop) && (variable.Value.Equals(product)))
+                {
+                    variable.Value.SetCounter(variable.Value.GetCounter(variable.Value) + product.GetCounter(product)); // old+new
+                    break;
+                }
+                
             }
-
-            //throw new Exception("Shop wasn't add to dictionary");
-            // try|catch . . .  
+            Dictionary.Add(shop, product);
         }
         
 
         public void ChangePrice(Product.Product product, float newPrice)
         {
-            product.ChangePrice(product, newPrice);
+            product.SetPrice(product, newPrice);
         }
 
         public void DeleteProduct(Product.Product product)
         {
-            foreach (var VARIABLE in Dictionary.Values)
+            foreach (Product.Product variable in Dictionary.Values)
             {
-                if (Dictionary.ContainsValue(product)) Dictionary.Count();//
+                //if (Dictionary.ContainsValue(product)) Dictionary.Count();//
             }
-            
+            //можно не удалять, а счётчик поставить на 0
         }
 
         public void AddProducts(List<Product.Product> products)
@@ -61,11 +59,11 @@ namespace Shops.ShopCenter
 
         public void DeleteProducts(List<Product.Product> products)
         {
-            foreach (var VARIABLE in products)
+            foreach (Product.Product variable in products)
             {
-                if (Dictionary.ContainsValue(VARIABLE))
+                if (Dictionary.ContainsValue(variable))
                 {
-                    DeleteProduct(VARIABLE);
+                    DeleteProduct(variable);
                 }
             }
         }

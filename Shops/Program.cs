@@ -6,7 +6,9 @@ namespace Shops
     internal class Program
     {
         private static void Main()
-        {
+        { 
+            var Shop = new Shop("","");
+
             var product1 = new Product.Product("name1");
             var product2 = new Product.Product("name2", 2);
             var product3 = new Product.Product("name3", 3);
@@ -15,7 +17,6 @@ namespace Shops
             list.Add(product1);
             list.Add(product2);
             list.Add(product3);
-            var Shop = new Shop("","");
             var Product = new Product.Product("");
             Shop.AddProduct(Shop, Product);
             Shop.ChangePrice(Product, 12);
