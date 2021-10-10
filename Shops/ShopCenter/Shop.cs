@@ -21,24 +21,24 @@ namespace Shops.ShopCenter
         private string ShopName { get; set; }
         private string Address { get; set; }
         private Dictionary<Shop, Product.Product> Dictionary { get; }
-        
-        
         public void AddProduct(Shop shop, Product.Product product)
         {
             foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
             {
-                if ((variable.Key == shop) && (variable.Value.Equals(product)))
+                if (variable.Key == shop && variable.Value.Equals(product))
                 {
                     variable.Value.SetCounter(variable.Value.GetCounter(variable.Value) + product.GetCounter(product)); // old+new
                     break;
                 }
             }
+
             Dictionary.Add(shop, product);
         }
+
         public void AddProducts(Shop shop, List<Product.Product> products)
-        { 
-            foreach (Product.Product variable in products) 
-            { 
+        {
+            foreach (Product.Product variable in products)
+            {
                 AddProduct(shop, variable);
             }
         }
@@ -47,26 +47,19 @@ namespace Shops.ShopCenter
         {
             foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
             {
-                if ((shop == variable.Key) && (variable.Value.Equals(product)))
+                if (shop == variable.Key && variable.Value.Equals(product))
                 {
                     product.SetPrice(product, newPrice);
                 }
             }
         }
 
-        public void DeleteProduct(Shop shop,Product.Product product)
+        public void DeleteProduct(Shop shop, Product.Product product)
         {
             foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
             {
-                if ((variable.Key == shop) && (variable.Value.Equals(product))) product.SetCounter(0);
+                if (variable.Key == shop && variable.Value.Equals(product)) variable.Value.SetCounter(0);
                 else throw new Exception("Shop name is incorrect or this shop didnt equals product");
-            }
-        }
-        public void DeleteProducts(Shop shop, List<Product.Product> products)
-        {
-            foreach (Product.Product variable in products)
-            {
-                DeleteProduct(shop, variable);
             }
         }
 
@@ -86,18 +79,39 @@ namespace Shops.ShopCenter
                     }
                 }
             }
-            if (returnProduct != null) return returnShop;
-                throw new Exception("this product isn't founded");
+
+            if (returnProduct != null)
+                return returnShop;
+            throw new Exception("this product isn't founded");
         }
 
-        public Shop BuyProducts(Person person, Shop shop, Dictionary<Product.Product, int> products)
+        public void BuyProducts(Person person, Shop shop, List<Product.Product> products)
         {
-            foreach (var VARIABLE in products)
+            double totalPrice = 0;
+            foreach (Product.Product v1 in products)
             {
-                //
+                foreach (KeyValuePair<Shop, Product.Product> v2 in Dictionary)
+                {
+                    if ((shop == v2.Key) && (v1 == v2.Value) && (v1.GetCounter(v1) <= v2.Value.GetCounter(v2.Value)))
+                    {
+                        totalPrice += v2.Value.GetPrice(v2.Value);
+                    }
+                }
             }
-            return null;
+
+            if (totalPrice > person.GetGold(person)) throw new Exception("We don't have much money ");
+            foreach (Product.Product v1 in products)
+            {
+                foreach (KeyValuePair<Shop, Product.Product> v2 in Dictionary)
+                {
+                    if ((shop == v2.Key) && (v1 == v2.Value) && (v1.GetCounter(v1) <= v2.Value.GetCounter(v2.Value)))
+                    {
+                        DeleteProduct(shop, v1);
+                    }
+                }
+            }
+
+            person.SetGold(person.GetGold(person) - totalPrice);
         }
-        
     }
 }

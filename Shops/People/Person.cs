@@ -4,11 +4,6 @@ namespace Shops.People
 {
     public class Person
     {
-        private string PersonName { get; set; }
-        private float Gold { get; set; }
-        
-        private Dictionary<Product.Product, int> ToBuyList { get; set; }
-
         public Person(string personName)
         {
             PersonName = personName;
@@ -16,11 +11,19 @@ namespace Shops.People
             ToBuyList = null;
         }
 
-        public void AddToList(Product.Product product, int counter)
+        private string PersonName { get; set; }
+        private double Gold { get; set; }
+        private List<Product.Product> ToBuyList { get; set; }
+        public void AddToList(Product.Product product)
         {
-            ToBuyList.Add(product, counter);
+            ToBuyList.Add(product);
         }
 
-        public Dictionary<Product.Product, int> GetProductList() => ToBuyList;
+        public List<Product.Product> GetProductList() => ToBuyList;
+        public double GetGold(Person person) => person.Gold;
+        public void SetGold(double gold)
+        {
+            Gold = gold;
+        }
     }
 }
