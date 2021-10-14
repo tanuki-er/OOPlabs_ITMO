@@ -4,12 +4,12 @@ namespace Shops.Product
 {
     public class Product
     {
-        public Product(string productName, double productPrice)
+        public Product(string productName, double productCounter)
         {
             ProductId = Guid.NewGuid();
             ProductName = productName;
-            ProductCounter = 1;
-            ProductPrice = productPrice;
+            ProductCounter = productCounter;
+            ProductPrice = 0;
         }
 
         public Product(string productName, double productPrice, double productCounter)

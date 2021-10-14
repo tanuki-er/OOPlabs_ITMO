@@ -9,6 +9,7 @@ namespace Shops.People
             PersonName = personName;
             Gold = 500;
             ToBuyList = null;
+            ToBuyList = new List<Product.Product>();
         }
 
         private string PersonName { get; set; }

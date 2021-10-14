@@ -4,37 +4,30 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Shops.People;
+using Shops.ShopCenter;
 
-namespace Shops.ShopCenter
+namespace Shops
 {
-    public class Shop// : IService
+    public class Executor : IService
     {
-        public Shop(string shopName, string address)
-        {
-            ShopId = Guid.NewGuid();
-            ShopName = shopName;
-            Address = address;
-            Dictionary = new Dictionary<Shop, Product.Product>();
-        }
-
         private Guid ShopId { get; set; }
         private string ShopName { get; set; }
         private string Address { get; set; }
-        private Dictionary<Shop, Product.Product> Dictionary { get; }
-
-        /*
+        private Dictionary<Shop, Product.Product> Dictionary { get; } = new Dictionary<Shop, Product.Product>();
         public void AddProduct(Shop shop, Product.Product product)
         {
             foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
             {
                 if (variable.Key == shop && variable.Value.Equals(product))
                 {
-                    variable.Value.SetCounter(variable.Value.GetCounter(variable.Value) + product.GetCounter(product)); // old+new
-                    break;
+                    variable.Value.SetCounter(variable.Value.GetCounter(variable.Value) +
+                                              product.GetCounter(product)); // old+new
+                }
+                else if (variable.Key == shop && !variable.Value.Equals(product))
+                {
+                    Dictionary.Add(shop, product);
                 }
             }
-
-            Dictionary.Add(shop, product);
         }
 
         public void AddProducts(Shop shop, List<Product.Product> products)
@@ -56,6 +49,17 @@ namespace Shops.ShopCenter
             }
         }
 
+        public double GetPrice(Product.Product product)
+        {
+            foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
+            {
+                if (variable.Value == product)
+                    return variable.Value.GetPrice(variable.Value);
+            }
+
+            return 0;
+        }
+
         public void DeleteProduct(Shop shop, Product.Product product)
         {
             foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
@@ -71,7 +75,10 @@ namespace Shops.ShopCenter
             var returnShop = new Shop(null, null);
             foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
             {
-                if (variable.Value.Equals(product) && returnProduct == null) returnProduct = variable.Value;
+                if (variable.Value.Equals(product) && product.GetCounter(product) > variable.Value.GetCounter(variable.Value))
+                    throw new Exception("not enough products");
+                if (variable.Value.Equals(product) && returnProduct == null)
+                    returnProduct = variable.Value;
                 if (variable.Value.Equals(product) && returnProduct != null)
                 {
                     if (variable.Value.GetPrice(variable.Value) < returnProduct.GetPrice(returnProduct))
@@ -114,6 +121,6 @@ namespace Shops.ShopCenter
             }
 
             person.SetGold(person.GetGold(person) - totalPrice);
-        }*/
+        }
     }
 }
