@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Isu.Services
+﻿namespace Isu.Services
 {
     public interface IIsuService
     {
