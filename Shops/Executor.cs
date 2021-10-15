@@ -71,7 +71,7 @@ namespace Shops
 
         public Shop FindProduct(Product.Product product)
         {
-            var returnProduct = new Product.Product(null);
+            var returnProduct = new Product.Product(" ", 0);
             var returnShop = new Shop(null, null);
             foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
             {
@@ -89,7 +89,7 @@ namespace Shops
                 }
             }
 
-            if (returnProduct != null)
+            if (returnProduct.GetCounter(returnProduct) != 0)
                 return returnShop;
             throw new Exception("this product isn't founded");
         }
