@@ -14,6 +14,5 @@
         //List<Group> FindGroups(CourseNumber courseNumber);
 
         //void ChangeStudentGroup(Student student, Group newGroup);
-        
     }
 }
