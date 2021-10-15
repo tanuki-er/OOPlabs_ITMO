@@ -4,11 +4,10 @@ namespace Shops.People
 {
     public class Person
     {
-        public Person(string personName)
+        public Person(string personName, double gold)
         {
             PersonName = personName;
-            Gold = 500;
-            ToBuyList = null;
+            Gold = gold;
             ToBuyList = new List<Product.Product>();
         }
 
@@ -24,7 +23,7 @@ namespace Shops.People
         public double GetGold(Person person) => person.Gold;
         public void SetGold(double gold)
         {
-            Gold = gold;
+            Gold += gold;
         }
     }
 }

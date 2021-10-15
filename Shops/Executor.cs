@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Shops.People;
 using Shops.ShopCenter;
 
@@ -21,7 +18,7 @@ namespace Shops
                 if (variable.Key == shop && variable.Value.Equals(product))
                 {
                     variable.Value.SetCounter(variable.Value.GetCounter(variable.Value) +
-                                              product.GetCounter(product)); // old+new
+                                              product.GetCounter(product));
                 }
                 else if (variable.Key == shop && !variable.Value.Equals(product))
                 {
