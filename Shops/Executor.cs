@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Shop;
 using Shops.People;
 using Shops.ShopCenter;
 
@@ -10,10 +11,11 @@ namespace Shops
         private Guid ShopId { get; set; }
         private string ShopName { get; set; }
         private string Address { get; set; }
-        private Dictionary<Shop, Product.Product> Dictionary { get; } = new Dictionary<Shop, Product.Product>();
-        public void AddProduct(Shop shop, Product.Product product)
+        private Dictionary<ShopCenter.Shop, Product.Product> Dictionary { get; } = new Dictionary<ShopCenter.Shop, Product.Product>();
+
+        public void AddProduct(ShopCenter.Shop shop, Product.Product product)
         {
-            foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
+            foreach (KeyValuePair<ShopCenter.Shop, Product.Product> variable in Dictionary)
             {
                 if (variable.Key == shop && variable.Value.Equals(product))
                 {
@@ -27,7 +29,7 @@ namespace Shops
             }
         }
 
-        public void AddProducts(Shop shop, List<Product.Product> products)
+        public void AddProducts(ShopCenter.Shop shop, List<Product.Product> products)
         {
             foreach (Product.Product variable in products)
             {
@@ -35,9 +37,9 @@ namespace Shops
             }
         }
 
-        public void ChangePrice(Shop shop, Product.Product product, double newPrice)
+        public void ChangePrice(ShopCenter.Shop shop, Product.Product product, double newPrice)
         {
-            foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
+            foreach (KeyValuePair<ShopCenter.Shop, Product.Product> variable in Dictionary)
             {
                 if (shop == variable.Key && variable.Value.Equals(product))
                 {
@@ -48,32 +50,32 @@ namespace Shops
 
         public double GetPrice(Product.Product product)
         {
-            foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
+            foreach (KeyValuePair<ShopCenter.Shop, Product.Product> variable in Dictionary)
             {
-                if (variable.Value == product)
+                if (variable.Value.Equals(product))
                     return variable.Value.GetPrice(variable.Value);
             }
 
             return 0;
         }
 
-        public void DeleteProduct(Shop shop, Product.Product product)
+        public void DeleteProduct(ShopCenter.Shop shop, Product.Product product)
         {
-            foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
+            foreach (KeyValuePair<ShopCenter.Shop, Product.Product> variable in Dictionary)
             {
                 if (variable.Key == shop && variable.Value.Equals(product)) variable.Value.SetCounter(0);
-                else throw new Exception("Shop name is incorrect or this shop didnt equals product");
+                else throw new ShopException("Shop name is incorrect or this shop didnt equals product");
             }
         }
 
-        public Shop FindProduct(Product.Product product)
+        public ShopCenter.Shop FindProduct(Product.Product product)
         {
             var returnProduct = new Product.Product(" ", 0);
-            var returnShop = new Shop(null, null);
-            foreach (KeyValuePair<Shop, Product.Product> variable in Dictionary)
+            var returnShop = new ShopCenter.Shop(null, null);
+            foreach (KeyValuePair<ShopCenter.Shop, Product.Product> variable in Dictionary)
             {
                 if (variable.Value.Equals(product) && product.GetCounter(product) > variable.Value.GetCounter(variable.Value))
-                    throw new Exception("not enough products");
+                    throw new ShopException("not enough products");
                 if (variable.Value.Equals(product) && returnProduct == null)
                     returnProduct = variable.Value;
                 if (variable.Value.Equals(product) && returnProduct != null)
@@ -88,15 +90,15 @@ namespace Shops
 
             if (returnProduct.GetCounter(returnProduct) != 0)
                 return returnShop;
-            throw new Exception("this product isn't founded");
+            throw new ShopException("this product isn't founded");
         }
 
-        public void BuyProducts(Person person, Shop shop, List<Product.Product> products)
+        public void BuyProducts(Person person, ShopCenter.Shop shop, List<Product.Product> products)
         {
             double totalPrice = 0;
             foreach (Product.Product v1 in products)
             {
-                foreach (KeyValuePair<Shop, Product.Product> v2 in Dictionary)
+                foreach (KeyValuePair<ShopCenter.Shop, Product.Product> v2 in Dictionary)
                 {
                     if ((shop == v2.Key) && (v1 == v2.Value) && (v1.GetCounter(v1) <= v2.Value.GetCounter(v2.Value)))
                     {
@@ -105,10 +107,10 @@ namespace Shops
                 }
             }
 
-            if (totalPrice > person.GetGold(person)) throw new Exception("We don't have much money ");
+            if (totalPrice > person.GetGold(person)) throw new ShopException("We don't have much money ");
             foreach (Product.Product v1 in products)
             {
-                foreach (KeyValuePair<Shop, Product.Product> v2 in Dictionary)
+                foreach (KeyValuePair<ShopCenter.Shop, Product.Product> v2 in Dictionary)
                 {
                     if ((shop == v2.Key) && (v1 == v2.Value) && (v1.GetCounter(v1) <= v2.Value.GetCounter(v2.Value)))
                     {

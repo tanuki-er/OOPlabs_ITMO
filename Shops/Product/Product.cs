@@ -4,20 +4,16 @@ namespace Shops.Product
 {
     public class Product
     {
-        public Product(string productName, double productCounter)
-        {
-            ProductId = Guid.NewGuid();
-            ProductName = productName;
-            ProductCounter = productCounter;
-            ProductPrice = 0;
-        }
-
         public Product(string productName, double productPrice, double productCounter)
         {
-            ProductId = Guid.NewGuid();
-            ProductName = productName;
-            ProductCounter = productCounter;
+            ThisProduct = new Product(productName, productCounter);
             ProductPrice = productPrice;
+        }
+
+        public Product(string productName, double productCounter)
+        {
+            ThisProduct = new Product(productName);
+            ProductCounter = productCounter;
         }
 
         public Product(string productName)
@@ -32,6 +28,8 @@ namespace Shops.Product
         private string ProductName { get; set; }
         private double ProductCounter { get; set; }
         private double ProductPrice { get; set; }
+        private Product ThisProduct { get; set; }
+
         public void SetCounter(double counter)
         {
             ProductCounter += counter;
