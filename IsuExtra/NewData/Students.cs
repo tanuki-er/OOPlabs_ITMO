@@ -5,7 +5,8 @@ namespace IsuExtra.NewData
 {
     public class Students : Student
     {
-        public Students(string name) : base(name)
+        public Students(string name)
+            : base(name)
         {
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using IsuExtra.NewData;
 using IsuExtra.OGNP;
+using IsuExtra.Tools;
 
 namespace IsuExtra
 {
@@ -13,9 +14,9 @@ namespace IsuExtra
         public void AddNewOgnp(string facultyName, double number)
         {
             if (number != 0) OgnpGroups.Add(new Ognp(facultyName), new Stream(number));
-            else throw new Exception("Please, also add a new stream");
+            else throw new IsuExtraException("Please, also add a new stream");
         }
-        
+
         public void AddStudentToOgnp(OGNP.Ognp ognp, Students student)
         {
             foreach (KeyValuePair<Ognp, Stream> variable in OgnpGroups)
@@ -55,22 +56,21 @@ namespace IsuExtra
             foreach (KeyValuePair<Ognp, Stream> variable in OgnpGroups)
             {
                 if (variable.Key == ognp && variable.Value == stream) return variable.Value.GetStudentsList();
-                //streams.Add(variable.Value);
             }
 
-            throw new Exception("");
+            throw new IsuExtraException("This stream hadn't any students");
         }
 
         public List<Students> GetStudentsListWithoutOgnp()
         {
             var list = new List<Students>();
-            foreach (Students VARIABLE1 in GroupsList.Values)
+            foreach (Students variable1 in GroupsList.Values)
             {
-                foreach (Stream VARIABLE2 in OgnpGroups.Values)
+                foreach (Stream variable2 in OgnpGroups.Values)
                 {
-                    if (VARIABLE2.GetStudentsList().Contains(VARIABLE1))
+                    if (variable2.GetStudentsList().Contains(variable1))
                     {
-                        list.Add(VARIABLE1);
+                        list.Add(variable1);
                     }
                 }
             }

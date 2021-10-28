@@ -14,6 +14,5 @@ namespace IsuExtra.OGNP
         private string FacultyName { get; set; }
         private List<Stream> Streams { get; } = new List<Stream>();
         public void AddStream(double number) => Streams.Add(new Stream(number));
-
     }
 }
