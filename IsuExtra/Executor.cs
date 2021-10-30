@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Isu;
 using IsuExtra.NewData;
 using IsuExtra.OGNP;
 using IsuExtra.Tools;
@@ -11,24 +12,42 @@ namespace IsuExtra
         private Dictionary<Groups, Students> GroupsList { get; set; } = new Dictionary<Groups, Students>();
         private Dictionary<OGNP.Ognp, Stream> OgnpGroups { get; set; } = new Dictionary<Ognp, Stream>();
 
+        public void AddGroupsWithStudentsToList(Groups groups, Students students)
+        {
+            students.SetInTimeTable(groups.GetTimeTable());
+            students.SetFacultyName(groups.GetFacultyName(groups));
+            GroupsList.Add(groups, students);
+        }
+
         public void AddNewOgnp(string facultyName, double number)
         {
             if (number != 0) OgnpGroups.Add(new Ognp(facultyName), new Stream(number));
-            else throw new IsuExtraException("Please, also add a new stream");
+            else throw new IsuExtraException("Please, also add a number for new stream");
         }
 
-        public void AddStudentToOgnp(OGNP.Ognp ognp, Students student)
+        public void AddStudentToOgnp(OGNP.Ognp ognp, Stream stream, Students student)
         {
+            int counter = 0;
             foreach (KeyValuePair<Ognp, Stream> variable in OgnpGroups)
             {
-                if (variable.Key == ognp)
+                if (variable.Value.GetStudentsList().Contains(student))
                 {
+                    counter++;
+                }
+            }
+
+            if (counter >= 2) throw new IsuExtraException("you had a counter limit of Ognp courses");
+            foreach (KeyValuePair<Ognp, Stream> variable in OgnpGroups)
+            {
+                if (variable.Key == ognp && variable.Value == stream && variable.Value.PlaceChecking())
+                {
+                    student.AddToTimeTable(stream.GetTimeTable());
                     variable.Value.SetStudent(student);
                 }
             }
         }
 
-        public void DeleteStudentFromOgnp(OGNP.Ognp ognp, Students student)
+        public void DeleteStudentFromOgnp(OGNP.Ognp ognp, Stream stream, Students student)
         {
             foreach (KeyValuePair<Ognp, Stream> variable in OgnpGroups)
             {

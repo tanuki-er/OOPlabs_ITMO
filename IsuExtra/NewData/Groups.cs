@@ -11,6 +11,24 @@ namespace IsuExtra.NewData
         }
 
         private List<TimeTableStruct> List { get; set; } = new List<TimeTableStruct>();
-        private List<Students> StudentsList { get; set; } = new List<Students>();
+
+        public void AddLessons(TimeTableStruct lesson) => List.Add(lesson);
+        public List<TimeTableStruct> GetTimeTable() => List;
+        public string GetFacultyName(Groups groups)
+        {
+            string str = groups.GetCourseNumber(groups).GetCourse().ToCharArray()[0].ToString();
+            return str switch
+            {
+                "M" => "FITIP",
+                "N" => "FBIT",
+                "T" => "FBT",
+                "K" => "FIKT",
+                "L" => "FNE",
+                "P" => "FPIIKT",
+                "R" => "FSUIP",
+                "W" => "FEIET",
+                _ => throw new IsuExtra.Tools.IsuExtraException("Invalid faculty name")
+            };
+        }
     }
 }
