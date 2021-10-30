@@ -27,7 +27,7 @@ namespace IsuExtra
             int counter = 0;
             foreach (KeyValuePair<Ognp, Stream> variable in OgnpGroups)
             {
-                if ( variable.Value.GetStudentsList().Contains(student))
+                if (variable.Value.GetStudentsList().Contains(student))
                 {
                     counter++;
                 }
