@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Isu;
+﻿using System.Collections.Generic;
 using IsuExtra.NewData;
 using IsuExtra.OGNP;
 using IsuExtra.Tools;
@@ -19,10 +17,9 @@ namespace IsuExtra
             GroupsList.Add(groups, students);
         }
 
-        public void AddNewOgnp(string facultyName, double number)
+        public void AddNewOgnp(OGNP.Ognp ognp, OGNP.Stream stream)
         {
-            if (number != 0) OgnpGroups.Add(new Ognp(facultyName), new Stream(number));
-            else throw new IsuExtraException("Please, also add a number for new stream");
+            OgnpGroups.Add(ognp, stream);
         }
 
         public void AddStudentToOgnp(OGNP.Ognp ognp, Stream stream, Students student)
@@ -30,13 +27,14 @@ namespace IsuExtra
             int counter = 0;
             foreach (KeyValuePair<Ognp, Stream> variable in OgnpGroups)
             {
-                if (variable.Value.GetStudentsList().Contains(student))
+                if ( variable.Value.GetStudentsList().Contains(student))
                 {
                     counter++;
                 }
+
+                if (counter >= 2) throw new IsuExtraException("you had a counter limit of Ognp courses");
             }
 
-            if (counter >= 2) throw new IsuExtraException("you had a counter limit of Ognp courses");
             foreach (KeyValuePair<Ognp, Stream> variable in OgnpGroups)
             {
                 if (variable.Key == ognp && variable.Value == stream && variable.Value.PlaceChecking())
@@ -71,13 +69,17 @@ namespace IsuExtra
 
         public List<Students> GetStudentsListFromOneOgnp(OGNP.Ognp ognp, Stream stream)
         {
-            var streams = new List<Stream>();
+            var list = new List<Students>();
             foreach (KeyValuePair<Ognp, Stream> variable in OgnpGroups)
             {
-                if (variable.Key == ognp && variable.Value == stream) return variable.Value.GetStudentsList();
+                if (variable.Key == ognp && variable.Value == stream)
+                {
+                    if (variable.Value.GetStudentsList() == null) throw new IsuExtraException("This stream hadn't any students");
+                    return variable.Value.GetStudentsList();
+                }
             }
 
-            throw new IsuExtraException("This stream hadn't any students");
+            throw new IsuExtraException("This Stream isn't founded");
         }
 
         public List<Students> GetStudentsListWithoutOgnp()
@@ -87,10 +89,7 @@ namespace IsuExtra
             {
                 foreach (Stream variable2 in OgnpGroups.Values)
                 {
-                    if (variable2.GetStudentsList().Contains(variable1))
-                    {
-                        list.Add(variable1);
-                    }
+                    if (!variable2.GetStudentsList().Contains(variable1)) list.Add(variable1);
                 }
             }
 

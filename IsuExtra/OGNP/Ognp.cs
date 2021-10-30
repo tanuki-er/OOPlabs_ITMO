@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using IsuExtra.NewData;
-
-namespace IsuExtra.OGNP
+﻿namespace IsuExtra.OGNP
 {
     public class Ognp
     {
