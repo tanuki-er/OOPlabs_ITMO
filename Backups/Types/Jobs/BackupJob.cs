@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Backups.Algorithm.Service;
 using Backups.Types.Backup;
+using Backups.Types.Service;
 
 namespace Backups.Types.Jobs
 {
@@ -9,24 +10,20 @@ namespace Backups.Types.Jobs
         public BackupJob(string name)
         {
             Name = name;
+            //??
         }
 
+        private IAlgorithm Algorithm { get; set; }//??
         private string Name { get; set; }
-        private List<RestorePoint> RestorePoints { get; set; } = new List<RestorePoint>();
-        //private List<Files> FilesList { get; set; } = new List<Files>();
-        
-
-        
-        //todo init job. create directory
-        //todo add file
-        //todo delete file.     index, name or object
-        //todo run job
-        public void AddJob() => throw new Exception();
-        public void DeleteJob() => throw new Exception();
-        public void AddFile() => throw new Exception();
-        public void AddRestorePoint() => throw new Exception();
-
-
-
+        private BackupStruct BackupStruct { get; set; } = new BackupStruct();
+        private List<JobObject> JobObject { get; set; } = new List<JobObject>();
+        private FileSystem FileSystem { get; set; } = new FileSystem();
+        public void AddJob(JobObject jobObject) => JobObject.Add(jobObject);
+        public void DeleteJob(JobObject jobObject) => JobObject.Remove(jobObject);
+        //public void AddFileWay(string fileWay) => throw new Exception();
+        public void CreateRestorePoint() => BackupStruct.AddRestorePointToStorages(ReturnStorages());
+        private List<Storage> ReturnStorages() => Algorithm.CreateStorage( /*??*/);
+//todo add things to algorithm
+        public List<JobObject> GetJobObjects() => JobObject;
     }
 }

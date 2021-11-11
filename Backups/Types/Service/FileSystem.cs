@@ -1,27 +1,29 @@
-﻿namespace Backups.Types.Service
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Backups.Types.Jobs;
+using static System.IO.Path;
+
+namespace Backups.Types.Service
 {
     public class FileSystem : IRepository
     {
-        //filepath
-        
-        public void AddFilePath()
+        private List<FileInfo> FileArchive { get; set; } = new List<FileInfo>();
+        private FileInfo FileInfo { get; set; }
+        public void CopyFilesToDirectory(List<JobObject> jobObjects, DirectoryInfo directory)
         {
-            throw new System.NotImplementedException();
+            for (int index = 0; index < jobObjects.Count; index++)
+            {
+                JobObject variable = jobObjects[index];
+                File.Copy(variable.GetFileWay(),
+                    directory.Name + "\\jobObject_" + index.ToString() + GetExtension(variable.GetFileWay()));
+            }
         }
 
-        public void ToZipDirectory()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void CopyFilesToDirectory()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void DeleteDirectory()
-        {
-            throw new System.NotImplementedException();
-        }
+        public DirectoryInfo CreateZipDir() => Directory.CreateDirectory("");
+//todo add a place
+        public void DeleteDirectory(DirectoryInfo directory) => directory.Delete();
+        public override string ToString() => base.ToString();
     }
 }

@@ -1,13 +1,13 @@
 ﻿namespace Backups.Types.Jobs
 {
-    public class JobObject
+    public abstract class JobObject
     {
-        public JobObject(string filepath)
+        protected JobObject(string fileWay)
         {
-            FilePath = filepath;
+            FileWay = fileWay;
         }
 
-        private string FilePath { get; set; }
-        
+        private string FileWay { get; set; }
+        public string GetFileWay() => FileWay;
     }
 }

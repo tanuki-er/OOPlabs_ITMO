@@ -5,16 +5,14 @@ namespace Backups.Types.Backup
 {
     public class RestorePoint
     {
-        public RestorePoint(int pointNumber)
+        public RestorePoint( List<Storage> storages)
         {
-            PointNumber = pointNumber;
+            Storages = storages;
             CreatingTime = DateTime.Now;
         }
 
-        private int PointNumber{get; set;}
         private DateTime CreatingTime { get; set; }
-
-        private List<Storage> Storages { get; set; } = new List<Storage>();
-        //todo private dictionary<>/list<> with file information = new..;
+        private List<Storage> Storages { get; set; }
+        public List<Storage> GetStorages() => Storages;
     }
 }

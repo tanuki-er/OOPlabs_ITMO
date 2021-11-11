@@ -1,11 +1,13 @@
-﻿namespace Backups.Types.Service
+﻿using System.Collections.Generic;
+using System.IO;
+using Backups.Types.Jobs;
+
+namespace Backups.Types.Service
 {
     public interface IRepository
     {
-        public void AddFilePath();
-        public void ToZipDirectory();
-        public void CopyFilesToDirectory();
-        public void DeleteDirectory();
-
+        public DirectoryInfo CreateZipDir();
+        public void CopyFilesToDirectory(List<JobObject> jobObjects, DirectoryInfo directory);
+        public void DeleteDirectory(DirectoryInfo directory);
     }
 }
