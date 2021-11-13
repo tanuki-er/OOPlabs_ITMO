@@ -2,14 +2,15 @@
 
 namespace Backups.Types.Backup
 {
-    public abstract class Storage
+    public class Storage
     {
-        protected Storage(string zFileWay)
+        public Storage(string zippedFileWay)
         {
-            ZFileWay = zFileWay;
+            ZippedFileWay = zippedFileWay;
             DateTime = DateTime.Now;
         }
-        private string ZFileWay { get; set; }
+
+        private string ZippedFileWay { get; set; }
         private DateTime DateTime { get; set; }
     }
 }

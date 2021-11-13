@@ -8,12 +8,14 @@ namespace Backups.Tools
         {
         }
 
-        public BackupsException(string message) : base(message)
+        public BackupsException(string message)
+            : base(message)
         {
         }
 
-        public BackupsException(string message, Exception innerException) : base(message, innerException)
+        public BackupsException(string message, Exception innerException)
+            : base(message, innerException)
         {
-        } 
+        }
     }
 }
