@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Backups.Types.JobObject
 {
     public class JobObject
     {
-        private List<NewFile> JobObjects { get; set; } = new List<NewFile>();
-        public void SetNewFile(string fileWay) => JobObjects.Add(new NewFile(fileWay));
-        public void SetNewFile(NewFile file) => JobObjects.Add(file);
-        public List<NewFile> GetJobObjects() => JobObjects;
-        public void DeleteFileFromJobObjects(NewFile file) => JobObjects.Remove(file);
-        public string GetFileWay(NewFile file) => file.GetFileWay();
+        private List<FileInfo> JobObjects { get; set; } = new List<FileInfo>();
+        public void SetNewFile(FileInfo file) => JobObjects.Add(file);
+        public List<FileInfo> GetJobObjects() => JobObjects;
+        public void DeleteFileFromJobObjects(FileInfo file) => JobObjects.Remove(file);
+        public string GetFileWay(FileInfo file) => file.DirectoryName;
     }
 }
