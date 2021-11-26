@@ -2,9 +2,9 @@
 {
     public interface IMethods
     {
-        public void TakeMoney();
-        public void PutMoney();
-        public void SendMoney();
-        public void ReturnMoney();
+        public void TakeMoney(ClientSystem.Client client, double money);
+        public void PutMoney(ClientSystem.Client client, double money);
+        public void SendMoney(ClientSystem.Client client, double money);
+        public void ReturnMoney(ClientSystem.Client client, double money);
     }
 }
