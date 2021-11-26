@@ -11,14 +11,13 @@ namespace Backups.Algorithm
 {
     public class SingleStorage : IAlgorithm
     {
-        public List<Storage> CreateStorage(List<FileInfo> jobObjects, Backup backup, BackupJob backupJob, FileArchiveSystem fileArchiveSystem)
+        public List<Storage> CreateStorage(List<FileClass> jobObjects, Backup backup, BackupJob backupJob, FileArchiveSystem fileArchiveSystem)
         {
             string newDirectory = fileArchiveSystem.CreateNewZipDirectoryName(backupJob, backup);
-            DirectoryInfo localDirectory = Directory.CreateDirectory("C:\\Users\\hagam\\RiderProjects\\tanuki-er\\Backups\\bin\\Debug\\netcoreapp3.1\\Zipzip");
-            string directoryWay = localDirectory.FullName;
-            ZipFile.CreateFromDirectory(directoryWay, directoryWay + newDirectory);
+            DirectoryInfo localDirectory = Directory.CreateDirectory(@"C:\Users\hagam\BackupTest\Zip");
             fileArchiveSystem.CopyFilesToDirectory(jobObjects, localDirectory);
-            fileArchiveSystem.DeleteDirectory(localDirectory);
+            string directoryWay = localDirectory.FullName;
+            ZipFile.CreateFromDirectory(directoryWay, fileArchiveSystem.GetArchiveFullWay() + @"\filename.zip");
             var storage = new List<Storage>();
             var newStorage = new Storage(newDirectory);
             storage.Add(newStorage);

@@ -11,15 +11,16 @@ namespace Backups.Algorithm
 {
     public class SplitStorage : IAlgorithm
     {
-        public List<Storage> CreateStorage(List<FileInfo> jobObjects, Backup backup, BackupJob backupJob, FileArchiveSystem fileArchiveSystem)
+        public List<Storage> CreateStorage(List<FileClass> jobObjects, Backup backup, BackupJob backupJob, FileArchiveSystem fileArchiveSystem)
         {
             var storage = new List<Storage>();
+            DirectoryInfo localDirectory = Directory.CreateDirectory("D:\\Backups\\Zip");
             for (int index = 1; index < jobObjects.Count; index++)
             {
-                FileInfo variable = jobObjects[index];
+                FileClass variable = jobObjects[index];
                 string newDirectory = fileArchiveSystem.CreateNewZipDirectoryName(backupJob, backup, index);
                 var newStorage = new Storage(newDirectory);
-                ZipFile.CreateFromDirectory(variable.DirectoryName, variable.DirectoryName + newDirectory);
+                ZipFile.CreateFromDirectory(localDirectory.FullName, localDirectory.FullName + newDirectory);
                 storage.Add(newStorage);
             }
 

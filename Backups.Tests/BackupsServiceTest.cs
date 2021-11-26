@@ -14,16 +14,13 @@ namespace Backups.Tests
         [SetUp]
         public void Setup()
         {
-            _backupJob = new BackupJob("name", new SingleStorage());
+            _backupJob = new BackupJob("BApp1", new SingleStorage());
             _fileArchiveSystem = new FileArchiveSystem();
-            var fileA = new FileInfo("1.txt");
-            var fileB = new FileInfo("2.txt");
+            var fileA = new FileClass("1.txt");
+            var fileB = new FileClass("2.txt");
             _backupJob.AddToJobObjects(fileA);
             _backupJob.AddToJobObjects(fileB);
             _backupJob.CreateRestorePoint();
-            _backupJob.DeleteFromJobObjects(fileB);
-            _backupJob.CreateRestorePoint();
-
         }
        [Test]
         public void BackupTest()

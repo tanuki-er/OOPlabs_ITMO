@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Runtime.ConstrainedExecution;
-
-namespace Backups
+﻿namespace Backups
 {
     internal class Program
     {
