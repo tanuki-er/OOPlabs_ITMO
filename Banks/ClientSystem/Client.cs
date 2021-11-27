@@ -6,24 +6,25 @@ namespace Banks.ClientSystem
 {
     public class Client : Person
     {
-        public Client(string firstName, string secondName) : base(firstName, secondName)
+        public Client(string firstName, string secondName)
+            : base(firstName, secondName)
         {
-            Verification = VerificationCheck();
+            VerificationPrivate = VerificationCheck();
         }
 
-        public Client(string firstName, string secondName, string address, string passport) : base(firstName, secondName)
+        public Client(string firstName, string secondName, string address, string passport)
+            : base(firstName, secondName)
         {
             Address = address;
             Passport = passport;
-            Verification = VerificationCheck();
+            VerificationPrivate = VerificationCheck();
         }
 
-        private bool Verification { get; set; }
-        private List<ITypeOfBankAccount> bankAccountsList { get; set; } = new List<ITypeOfBankAccount>();
-        public List<ITypeOfBankAccount> BankAccountsList { get => bankAccountsList; }
-        
-        
+        public bool Verification { get => VerificationPrivate; }
+        public string ClientName { get => Name; }
+        public List<ITypeOfBankAccount> BankAccountsList { get => BankAccountsListPrivate; }
+        private bool VerificationPrivate { get; set; }
+        private List<ITypeOfBankAccount> BankAccountsListPrivate { get; set; } = new List<ITypeOfBankAccount>();
         private bool VerificationCheck() => Address != null && Passport != null;
-//Person and Account List
     }
 }

@@ -8,11 +8,12 @@
             SecondName = secondName;
         }
 
+        public string Address { get => AddressPrivate; set => AddressPrivate = value; }
+        public string Passport { get => PassportPrivate; set => PassportPrivate = value; }
+        protected string Name { get => FirstName + " " + SecondName; }
         private string FirstName { get; set; }
         private string SecondName { get; set; }
-        private string address { get; set; }
-        public string Address { get => address; set => address = value; }
-        private string passport { get; set; }
-        public string Passport { get => passport; set => passport = value; }
+        private string AddressPrivate { get; set; }
+        private string PassportPrivate { get; set; }
     }
 }
