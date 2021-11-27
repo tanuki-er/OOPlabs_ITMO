@@ -23,11 +23,12 @@ namespace Banks.Center
 
         public void AddNewAccount(Bank bank, Client client, double startScore, AccountType accountType)
         {
-            foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
+            foreach (var variable in BankCenterClientsDictionaryPrivate)
             {
-                if (key.Equals(bank) && value.Equals(client)) continue;
+                if (variable.Key.Equals(bank) && variable.Value.Equals(client)) continue;
                 if (accountType == AccountType.Deposit) throw new Exception();
                 client.BankAccountsList.Add(TypeOfBankAccount.ReturnNewAccount(accountType, startScore, bank));
+                Console.WriteLine("\t\t Account was added correctly");
             }
 
             Console.WriteLine("\tNew {0} account was creating", accountType);
@@ -42,6 +43,8 @@ namespace Banks.Center
                 {
                     client.BankAccountsList.Add(TypeOfBankAccount.ReturnNewAccount(accountType, startScore, bank, timer));
                 }
+
+                Console.WriteLine("\t\t Account was added correctly");
             }
 
             Console.WriteLine("\tNew {0} account was creating", accountType);
@@ -55,26 +58,17 @@ namespace Banks.Center
                     throw new Exception();
             }
 
-            Dictionary<Bank, Client>.ValueCollection accounts = BankCenterClientsDictionaryPrivate.Values;
-            double newScore = 0;
-            var list = accounts.
-            
-            foreach (var variable1 in accounts)
+            foreach (KeyValuePair<Bank, Client> variable in BankCenterClientsDictionaryPrivate)
             {
-                if (variable1.BankAccountsList)
-            }
-            foreach (var variable in accounts)
-            {
-                /*if (variable.AccountType == accountType) continue;*/
-                Console.WriteLine("spweknv");
-                variable.PutMoney(variable, money);
-                newScore = variable.Score;
+                Client localClient = variable.Value;
+                foreach (ITypeOfBankAccount localAccount in localClient.BankAccountsList)
+                {
+                    if (localAccount.AccountType == accountType) localAccount.PutMoney(localAccount, money);
+                    Console.WriteLine("{0} was added. Total score: {1}", money, localAccount.Score);
+                }
             }
 
-            Console.WriteLine(newScore);
             Console.WriteLine("Adding part correctly");
-
-            Console.WriteLine("{0} was added. Total score: {1}", money, newScore);
         }
 
         public void GetMoney(Bank bank, Client client, AccountType accountType, double money)
