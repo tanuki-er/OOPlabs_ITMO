@@ -1,19 +1,19 @@
-﻿using Banks.BankSystem.BankService;
+﻿using Banks.BankSystem.Accounts;
+using Banks.BankSystem.BankService;
 using Banks.Center;
 using Banks.ClientSystem;
 
 namespace Banks.BankSystem.Methods
 {
-    public abstract class AccountMethods : BankService.IMethods
+    public abstract class AccountMethods
     {
-        public void TakeMoney(Client client, double money)
+        public void TakeMoney(double money)
         {
             throw new System.NotImplementedException();
         }
 
-        public void PutMoney(ITypeOfBankAccount typeOfBankAccount, double money)
+        public void PutMoney(double money)
         {
-            typeOfBankAccount.Score += money;
         }
 
         public void SendMoney(ClientSystem.Client client, double money)
