@@ -4,7 +4,5 @@
     {
         Verified,
         Unverified,
-        Blocked,
-        Frozen
     }
 }

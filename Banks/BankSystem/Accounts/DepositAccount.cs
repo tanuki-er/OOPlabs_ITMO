@@ -1,16 +1,13 @@
-﻿using System;
-using Banks.BankSystem.BankService;
-using Banks.BankSystem.Methods;
-using Banks.Center;
-using Banks.ClientSystem;
+﻿using Banks.BankSystem.BankService;
 
 namespace Banks.BankSystem.Accounts
 {
-    public class DepositAccount : TypeOfBankAccount
+    public sealed class DepositAccount : TypeOfBankAccount
     {
+        public AccountStatus AccountStatus { get => AccountStatus.Verified; }
+        public AccountType AccountType { get => AccountType.Deposit; }
         public int Timer { get => TimerPrivate; set => TimerPrivate = value; }
         private int TimerPrivate { get; set; }
-        public override TypeOfBankAccount ReturnNewAccount(Client client, double score)
-            => new DepositAccount();
+        public TypeOfBankAccount ReturnNewAccount() => new DepositAccount();
     }
 }

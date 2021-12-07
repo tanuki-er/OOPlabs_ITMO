@@ -1,30 +1,22 @@
-﻿namespace Banks.Center
+﻿using Banks.Center.BankTermsAndRestrictions;
+
+namespace Banks.Center
 {
     public class Bank
     {
-        public Bank(string name, double firstInterest, double secondInterest, double thirdInterest, int timer, double creditLimit, double restrictionForDoubtful)
+        public Bank(string name)
         {
             NamePrivate = name;
-            FirstInterest = firstInterest;
-            SecondInterest = secondInterest;
-            ThirdInterest = thirdInterest;
-            Timer = timer;
-            CreditLimit = creditLimit;
-            RestrictionForDoubtfulPrivate = restrictionForDoubtful;
+            BankTermsAndRestrictions = new BankTermsAndRestrictions.BankTermsAndRestrictions();
         }
 
-        public double RestrictionForDoubtful { get => RestrictionForDoubtfulPrivate; }
         public string Name { get => NamePrivate; }
         private string NamePrivate { get; }
-        private double FirstInterest { get; }
-        private double SecondInterest { get; }
-        private double ThirdInterest { get; }
-        private int Timer { get; }
-        private double CreditLimit { get; }
-        private double RestrictionForDoubtfulPrivate { get; }
+        private BankTermsAndRestrictions.BankTermsAndRestrictions BankTermsAndRestrictions { get; set; }
+
+        public void AddTerms(double debitInterest, double first, double second, double third)
+            => BankTermsAndRestrictions.Terms_ = new Terms(debitInterest, first, second, third);
+        public void AddRestrictions(int timer, double creditLimit, double commission)
+            => BankTermsAndRestrictions.Restrictions_ = new Restrictions(timer, creditLimit, commission);
     }
 }
-
-// interest on the balance
-// timer
-// credit limit

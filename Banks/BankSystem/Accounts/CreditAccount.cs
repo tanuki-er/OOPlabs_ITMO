@@ -1,18 +1,13 @@
-﻿using System;
-using Banks.BankSystem.Accounts.AccountVerificationDecorator;
-using Banks.BankSystem.BankService;
-using Banks.BankSystem.Methods;
-using Banks.Center;
-using Banks.ClientSystem;
+﻿using Banks.BankSystem.BankService;
 
 namespace Banks.BankSystem.Accounts
 {
-    public class CreditAccount : TypeOfBankAccount
+    public sealed class CreditAccount : TypeOfBankAccount
     {
-        private AccountStatus AccountStatus { get; set; } = AccountStatus.Verified;
-        public override TypeOfBankAccount ReturnNewAccount(Client client, double score)
-            => new CreditAccount();
-        
-        
+        public AccountStatus AccountStatus { get => AccountStatus.Verified; }
+        public AccountType AccountType { get => AccountType.Credit; }
+        /*public double CreditLimit { get; set; }*/
+        /*public double Commission { get; set; }*/
+        public TypeOfBankAccount ReturnNewAccount() => new CreditAccount();
     }
 }

@@ -4,15 +4,16 @@ using System.Globalization;
 using System.Linq;
 using Banks.BankSystem.Accounts;
 using Banks.BankSystem.BankService;
+using Banks.BankSystem.Factory;
 using Banks.BankSystem.Methods;
 using Banks.ClientSystem;
 
 namespace Banks.Center
 {
-    public class BankCenter : AccountMethods
+    public class BankCenter
     {
         public Dictionary<Bank, Client> BankCenterClientsDictionary { get => BankCenterClientsDictionaryPrivate; }
-        private Dictionary<Bank, Client> BankCenterClientsDictionaryPrivate { get; } = new Dictionary<Bank, Client>();
+        private Dictionary<Bank, Client> BankCenterClientsDictionaryPrivate { get; set; } = new Dictionary<Bank, Client>();
         private TypeOfBankAccount TypeOfBankAccount { get; set; }
 
         public void AddClientToTheBank(Bank bank, Client client)
@@ -21,36 +22,54 @@ namespace Banks.Center
             Console.WriteLine("\tClient {0} added to bank {1}", client.ClientName, bank.Name);
         }
 
-        public void AddNewAccount(Bank bank, Client client, double startScore, TypeOfBankAccount bankAccount)
+        public void AddNewAccount(Bank bank, AccountType accountType, Client client)
         {
-            foreach (var variable in BankCenterClientsDictionaryPrivate)
+            switch (accountType)
             {
-                if (variable.Key == bank && variable.Value == client) continue;
-                //if (accountType == AccountType.Deposit) throw new Exception();
-                client.BankAccountsList.Add(bankAccount);
-                Console.WriteLine("\t\t Account was added correctly");
-            }
-
-            Console.WriteLine("\tNew {0} account was creating", bankAccount.GetAccountType().ToString());
-        }
-
-        public void AddNewAccount(Bank bank, Client client, double startScore, AccountType accountType, int timer)
-        {
-            foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
-            {
-                if (key.Equals(bank) && value.Equals(client)) continue;
-                if (accountType == AccountType.Deposit)
+                case AccountType.Credit:
                 {
-                    client.BankAccountsList.Add(TypeOfBankAccount.ReturnNewAccount(accountType, startScore, timer));
+                    var account = new ReturnCreditAccount();
+                    if (client.ClientAddress != null && client.ClientPassport != null)
+                        AddTemplateAccountToList(account.ReturnBankAccount(), client, bank);
+                    else
+                        AddTemplateAccountToList(account.ReturnAccountDecorator(), client, bank);
+                    break;
                 }
 
-                Console.WriteLine("\t\t Account was added correctly");
-            }
+                case AccountType.Debit:
+                {
+                    var account = new ReturnDebitAccount();
+                    if (client.ClientAddress != null && client.ClientPassport != null)
+                        AddTemplateAccountToList(account.ReturnBankAccount(), client, bank);
+                    else
+                        AddTemplateAccountToList(account.ReturnAccountDecorator(), client, bank);
+                    break;
+                }
 
-            Console.WriteLine("\tNew {0} account was creating", accountType);
+                case AccountType.Deposit:
+                {
+                    var account = new ReturnDepositAccount();
+                    if (client.ClientAddress != null && client.ClientPassport != null)
+                        AddTemplateAccountToList(account.ReturnBankAccount(), client, bank);
+                    else
+                        AddTemplateAccountToList(account.ReturnAccountDecorator(), client, bank);
+                    break;
+                }
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(accountType), accountType, null);
+            }
         }
 
-        public void AddMoney(Bank bank, Client client, AccountType accountType, double money)
+        private void AddTemplateAccountToList(TypeOfBankAccount bankAccount, Client client, Bank bank)
+        {
+            foreach (KeyValuePair<Bank, Client> values in BankCenterClientsDictionary)
+            {
+                if (values.Key == bank && values.Value == client) values.Value.BankAccountsList.Add(bank, bankAccount);
+            }
+        }
+
+/*        public void AddMoney(Bank bank, Client client, AccountType accountType, double money)
         {
             foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
             {
@@ -63,7 +82,7 @@ namespace Banks.Center
                 Client localClient = variable.Value;
                 foreach (TypeOfBankAccount localAccount in localClient.BankAccountsList)
                 {
-                    if (localAccount.AccountType == accountType) localAccount.PutMoney(localAccount, money);
+                    if (localAccount.AccountType == accountType) continue;
                     Console.WriteLine("{0} was added. Total score: {1}", money, localAccount.Score);
                 }
             }
@@ -81,10 +100,10 @@ namespace Banks.Center
             foreach (TypeOfBankAccount variable in client.BankAccountsList)
             {
                if (variable.AccountType == accountType) continue;
-               if (!client.Verification && bank.RestrictionForDoubtful < money && money < variable.Score)
+               if (bank.RestrictionForDoubtful < money && money < variable.Score)
                    variable.Score -= money;
-               if (client.Verification && money < variable.Score) variable.Score -= money;
+               if (money < variable.Score) variable.Score -= money;
             }
-        }
+        }*/
     }
 }

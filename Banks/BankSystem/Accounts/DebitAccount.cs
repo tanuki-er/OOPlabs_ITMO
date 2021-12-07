@@ -1,14 +1,11 @@
-﻿using System;
-using Banks.BankSystem.BankService;
-using Banks.BankSystem.Methods;
-using Banks.Center;
-using Banks.ClientSystem;
+﻿using Banks.BankSystem.BankService;
 
 namespace Banks.BankSystem.Accounts
 {
-    public class DebitAccount : TypeOfBankAccount
+    public sealed class DebitAccount : TypeOfBankAccount
     {
-        public override TypeOfBankAccount ReturnNewAccount(Client client, double score)
-            => new DebitAccount();
+        public AccountStatus AccountStatus { get => AccountStatus.Verified; }
+        public AccountType AccountType { get => AccountType.Debit; }
+        public TypeOfBankAccount ReturnNewAccount() => new DebitAccount();
     }
 }

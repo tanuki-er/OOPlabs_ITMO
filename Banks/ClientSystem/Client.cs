@@ -1,31 +1,31 @@
 ﻿using System.Collections.Generic;
-using System.Security;
 using Banks.BankSystem.Accounts;
-using Banks.BankSystem.BankService;
+using Banks.Center;
 
 namespace Banks.ClientSystem
 {
-    public class Client : Person
+    public class Client
     {
         public Client(string firstName, string secondName)
-            : base(firstName, secondName)
         {
-            //VerificationPrivate = VerificationCheck();
+            FirstName = firstName;
+            SecondName = secondName;
         }
 
         public Client(string firstName, string secondName, string address, string passport)
-            : base(firstName, secondName)
         {
             Address = address;
             Passport = passport;
-            //VerificationPrivate = VerificationCheck();
         }
 
-        //public bool Verification { get => VerificationPrivate; }
-        public string ClientName { get => Name; }
-        public List<TypeOfBankAccount> BankAccountsList { get => BankAccountsListPrivate; }
-        //private bool VerificationPrivate { get; set; }
-        private List<TypeOfBankAccount> BankAccountsListPrivate { get; set; } = new List<TypeOfBankAccount>();
-        //private bool VerificationCheck() => Address != null && Passport != null;
+        public string ClientName { get => FirstName + SecondName; }
+        public string ClientAddress { get => Address; set => Address = value; }
+        public string ClientPassport { get => Passport; set => Passport = value; }
+        public Dictionary<Bank, TypeOfBankAccount> BankAccountsList { get => BankAccountsListPrivate; }
+        private string FirstName { get; set; }
+        private string SecondName { get; set; }
+        private string Address { get; set; }
+        private string Passport { get; set; }
+        private Dictionary<Bank, TypeOfBankAccount> BankAccountsListPrivate { get; set; } = new Dictionary<Bank, TypeOfBankAccount>();
     }
 }
