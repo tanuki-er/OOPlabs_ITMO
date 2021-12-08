@@ -7,6 +7,7 @@ using Banks.BankSystem.BankService;
 using Banks.BankSystem.Factory;
 using Banks.BankSystem.Methods;
 using Banks.ClientSystem;
+using Banks.Tools;
 
 namespace Banks.Center
 {
@@ -61,49 +62,124 @@ namespace Banks.Center
             }
         }
 
-        private void AddTemplateAccountToList(TypeOfBankAccount bankAccount, Client client, Bank bank)
-        {
-            foreach (KeyValuePair<Bank, Client> values in BankCenterClientsDictionary)
-            {
-                if (values.Key == bank && values.Value == client) values.Value.BankAccountsList.Add(bank, bankAccount);
-            }
-        }
-
-/*        public void AddMoney(Bank bank, Client client, AccountType accountType, double money)
+        public void AddMoney(Bank bank, Client client, AccountType accountType, double money)
         {
             foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
             {
-                if (!key.Equals(bank) || !value.Equals(client))
-                    throw new Exception();
-            }
-
-            foreach (KeyValuePair<Bank, Client> variable in BankCenterClientsDictionaryPrivate)
-            {
-                Client localClient = variable.Value;
-                foreach (TypeOfBankAccount localAccount in localClient.BankAccountsList)
+                if (key != bank || value != client) continue;
+                /*throw new BanksException("Fatal ERROR: incorrect Bank or Client");*/
+                foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
                 {
-                    if (localAccount.AccountType == accountType) continue;
-                    Console.WriteLine("{0} was added. Total score: {1}", money, localAccount.Score);
+                    Console.Write("\tTotal score: {0} + {1} -> ", variable.Value.Score, money);
+                    if (variable.Value.AccountType == accountType)
+                        variable.Value.PutMoney(variable.Value, money);
+                    Console.WriteLine(variable.Value.Score);
                 }
             }
 
-            Console.WriteLine("Adding part correctly");
+            Console.WriteLine("Money adding part work correctly");
         }
 
         public void GetMoney(Bank bank, Client client, AccountType accountType, double money)
         {
             foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
             {
-                if (!key.Equals(bank) || !value.Equals(client)) throw new Exception();
+                if (key != bank || value != client) continue;
+                /*throw new BanksException();*/
+                foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
+                {
+                    Console.Write("\tTotal score: {0} - {1} -> ", variable.Value.Score, money);
+                    if (variable.Value.AccountType == accountType)
+                        variable.Value.TakeMoney(variable.Value, money);
+                    Console.WriteLine(variable.Value.Score);
+                }
             }
 
-            foreach (TypeOfBankAccount variable in client.BankAccountsList)
+            Console.WriteLine("Money getting part work correctly\nWARNING: not forget about restrictions for accounts!!!");
+        }
+
+        public void SendMyMoney(Bank myBank, Bank friendlyBank, AccountType myAccountType, Client myClient, Client friend, double money)
+        {
+            TypeOfBankAccount friendAccount = null;
+            TypeOfBankAccount myAccount = null;
+            foreach (Client value in BankCenterClientsDictionaryPrivate.Values)
             {
-               if (variable.AccountType == accountType) continue;
-               if (bank.RestrictionForDoubtful < money && money < variable.Score)
-                   variable.Score -= money;
-               if (money < variable.Score) variable.Score -= money;
+                if (value == friend && value.BankAccountsList.ContainsKey(friendlyBank))
+                {
+                    Console.WriteLine("the friend was founded correctly");
+                    foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
+                    {
+                        if (variable.Key == friendlyBank && variable.Value.AccountType == AccountType.Debit)
+                            friendAccount = variable.Value;
+                    }
+                }
             }
-        }*/
+
+            foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
+            {
+                /*if (key != myBank || value != myClient) continue;*/
+                foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
+                {
+                    if (variable.Value.AccountType == myAccountType && variable.Value.Score >= money)
+                        myAccount = variable.Value;
+                }
+            }
+
+            Console.Write("\t Total score: {0} - {1} -> ", myAccount.Score, money);
+            myAccount.SendMoney(myAccount, friendAccount, money);
+            foreach (Client variable in BankCenterClientsDictionaryPrivate.Values)
+                if (variable == friend) friend.Logs.Add(myClient, money);
+            Console.WriteLine(myAccount.Score + "\n\t");
+            Console.WriteLine("Money sending part work correctly");
+        }
+
+        public void ReturnMyMoney(Bank myBank, Bank friendlyBank, AccountType myAccountType, Client myClient, Client friend, double money)
+        {
+            TypeOfBankAccount friendAccount = null;
+            TypeOfBankAccount myAccount = null;
+            foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
+            {
+                if (value == friend && value.BankAccountsList.ContainsKey(friendlyBank))
+                {
+                    if (value.Logs.ContainsKey(myClient) && value.Logs.ContainsValue(money))
+                    {
+                        foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
+                        {
+                            if (variable.Value.AccountType == AccountType.Debit)
+                                friendAccount = variable.Value;
+                        }
+                    }
+                }
+            }
+
+            foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
+            {
+                if (value == myClient && key == myBank)
+                {
+                    foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
+                    {
+                        myAccount = variable.Value;
+                    }
+                }
+            }
+
+            if (friendAccount != null && myAccount != null)
+            {
+                Console.Write("Total score: {0} + {1} -> ", myAccount.Score, money);
+                myAccount.ReturnMoney(myAccount, friendAccount, money);
+                Console.WriteLine(myAccount.Score);
+                Console.WriteLine("Money returning part work correctly");
+            }
+        }
+
+        private void AddTemplateAccountToList(TypeOfBankAccount bankAccount, Client client, Bank bank)
+        {
+            foreach (KeyValuePair<Bank, Client> values in BankCenterClientsDictionary)
+            {
+                if (values.Key == bank && values.Value == client) values.Value.BankAccountsList.Add(bank, bankAccount);
+            }
+
+            Console.WriteLine("Account was added");
+        }
     }
 }
