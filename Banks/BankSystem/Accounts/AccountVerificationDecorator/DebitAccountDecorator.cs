@@ -5,6 +5,5 @@ namespace Banks.BankSystem.Accounts.AccountVerificationDecorator
     public sealed class DebitAccountDecorator : AccountDecorator
     {
         public override AccountType AccountType { get => AccountType.Debit; }
-        public TypeOfBankAccount ReturnNewAccount() => new DebitAccountDecorator();
     }
 }

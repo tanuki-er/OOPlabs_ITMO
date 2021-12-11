@@ -1,7 +1,4 @@
 ﻿using Banks.BankSystem.Accounts;
-using Banks.BankSystem.BankService;
-using Banks.Center;
-using Banks.ClientSystem;
 
 namespace Banks.BankSystem.Methods
 {

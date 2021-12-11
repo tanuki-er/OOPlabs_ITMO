@@ -4,6 +4,6 @@ namespace Banks.BankSystem.Accounts.AccountVerificationDecorator
 {
     public abstract class AccountDecorator : TypeOfBankAccount
     {
-        public AccountStatus AccountStatus { get => AccountStatus.Unverified; }
+        public override AccountStatus AccountStatus { get => AccountStatus.Unverified; }
     }
 }

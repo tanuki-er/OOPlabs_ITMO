@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using Banks.BankSystem.Accounts;
 using Banks.BankSystem.BankService;
 using Banks.BankSystem.Factory;
-using Banks.BankSystem.Methods;
 using Banks.ClientSystem;
 using Banks.Tools;
 
@@ -13,9 +10,8 @@ namespace Banks.Center
 {
     public class BankCenter
     {
-        public Dictionary<Bank, Client> BankCenterClientsDictionary { get => BankCenterClientsDictionaryPrivate; }
         private Dictionary<Bank, Client> BankCenterClientsDictionaryPrivate { get; set; } = new Dictionary<Bank, Client>();
-        private TypeOfBankAccount TypeOfBankAccount { get; set; }
+        /*private TypeOfBankAccount TypeOfBankAccount { get; set; }*/
 
         public void AddClientToTheBank(Bank bank, Client client)
         {
@@ -85,17 +81,20 @@ namespace Banks.Center
             foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
             {
                 if (key != bank || value != client) continue;
-                /*throw new BanksException();*/
                 foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
                 {
-                    Console.Write("\tTotal score: {0} - {1} -> ", variable.Value.Score, money);
+                    if (variable.Value.AccountType == accountType && money > variable.Value.MoneyGettingLimit && variable.Value.MoneyGettingLimit != 0)
+                        throw new BanksException("ERROR: Your account status -> didn't verified");
                     if (variable.Value.AccountType == accountType)
+                    {
+                        Console.Write("\tTotal score: {0} - {1} -> ", variable.Value.Score, money);
                         variable.Value.TakeMoney(variable.Value, money);
-                    Console.WriteLine(variable.Value.Score);
+                        Console.WriteLine(variable.Value.Score);
+                    }
                 }
             }
 
-            Console.WriteLine("Money getting part work correctly\nWARNING: not forget about restrictions for accounts!!!");
+            Console.WriteLine("Money getting part work correctly\n");
         }
 
         public void SendMyMoney(Bank myBank, Bank friendlyBank, AccountType myAccountType, Client myClient, Client friend, double money)
@@ -117,20 +116,29 @@ namespace Banks.Center
 
             foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
             {
-                /*if (key != myBank || value != myClient) continue;*/
+                if (key != myBank || value != myClient) continue;
                 foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
                 {
+                    if (variable.Value.AccountType == myAccountType && money > variable.Value.MoneyGettingLimit && variable.Value.MoneyGettingLimit != 0)
+                        throw new BanksException("ERROR: Your account status -> didn't verified");
                     if (variable.Value.AccountType == myAccountType && variable.Value.Score >= money)
                         myAccount = variable.Value;
                 }
             }
 
-            Console.Write("\t Total score: {0} - {1} -> ", myAccount.Score, money);
-            myAccount.SendMoney(myAccount, friendAccount, money);
-            foreach (Client variable in BankCenterClientsDictionaryPrivate.Values)
-                if (variable == friend) friend.Logs.Add(myClient, money);
-            Console.WriteLine(myAccount.Score + "\n\t");
-            Console.WriteLine("Money sending part work correctly");
+            if (friendAccount != null && myAccount != null)
+            {
+                Console.Write("\t Total score: {0} - {1} -> ", myAccount.Score, money);
+                myAccount.SendMoney(myAccount, friendAccount, money);
+                foreach (Client variable in BankCenterClientsDictionaryPrivate.Values)
+                    if (variable == friend) friend.Logs.Add(myClient, money);
+                Console.WriteLine(myAccount.Score + "\n\t");
+                Console.WriteLine("Money sending part work correctly");
+            }
+            else
+            {
+                throw new BanksException("ERROR: something was wrong. Try again later");
+            }
         }
 
         public void ReturnMyMoney(Bank myBank, Bank friendlyBank, AccountType myAccountType, Client myClient, Client friend, double money)
@@ -139,47 +147,81 @@ namespace Banks.Center
             TypeOfBankAccount myAccount = null;
             foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
             {
-                if (value == friend && value.BankAccountsList.ContainsKey(friendlyBank))
+                if (value != friend || !value.BankAccountsList.ContainsKey(friendlyBank)) continue;
+                if (!value.Logs.ContainsKey(myClient) || !value.Logs.ContainsValue(money)) continue;
+                foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
                 {
-                    if (value.Logs.ContainsKey(myClient) && value.Logs.ContainsValue(money))
-                    {
-                        foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
-                        {
-                            if (variable.Value.AccountType == AccountType.Debit)
-                                friendAccount = variable.Value;
-                        }
-                    }
+                    if (variable.Value.AccountType != AccountType.Debit) continue;
+                    friendAccount = variable.Value;
+                    value.Logs.Remove(myClient, out money);
                 }
             }
 
             foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
             {
-                if (value == myClient && key == myBank)
+                if (value != myClient || key != myBank) continue;
+                foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
                 {
-                    foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
-                    {
-                        myAccount = variable.Value;
-                    }
+                    myAccount = variable.Value;
                 }
             }
 
             if (friendAccount != null && myAccount != null)
             {
-                Console.Write("Total score: {0} + {1} -> ", myAccount.Score, money);
+                Console.Write("\tTotal score: {0} + {1} -> ", myAccount.Score, money);
                 myAccount.ReturnMoney(myAccount, friendAccount, money);
                 Console.WriteLine(myAccount.Score);
                 Console.WriteLine("Money returning part work correctly");
+            }
+            else
+            {
+                throw new BanksException("ERROR: something was wrong. Try again later");
             }
         }
 
         private void AddTemplateAccountToList(TypeOfBankAccount bankAccount, Client client, Bank bank)
         {
-            foreach (KeyValuePair<Bank, Client> values in BankCenterClientsDictionary)
+            foreach (KeyValuePair<Bank, Client> values in BankCenterClientsDictionaryPrivate)
             {
                 if (values.Key == bank && values.Value == client) values.Value.BankAccountsList.Add(bank, bankAccount);
             }
 
+            foreach (Client variable in BankCenterClientsDictionaryPrivate.Values)
+            {
+                foreach ((Bank key, TypeOfBankAccount value) in variable.BankAccountsList)
+                {
+                    if (value.AccountType == bankAccount.AccountType && bank == key && bankAccount.AccountStatus == AccountStatus.Verified)
+                    {
+                       BankSettingsVerifyLegacy(value, bank);
+                    }
+
+                    if (value.AccountType == bankAccount.AccountType && bank == key && bankAccount.AccountStatus == AccountStatus.Unverified)
+                    {
+                        BankSettingsUnverifyLegacy(value, bank);
+                    }
+                }
+            }
+
             Console.WriteLine("Account was added");
+        }
+
+        private void BankSettingsVerifyLegacy(TypeOfBankAccount bankAccount, Bank bank)
+        {
+             bankAccount.CreditCommission = bank.TermsAndRestrictions.Restrictions_.CreditCommission_;
+             bankAccount.CreditLimit = bank.TermsAndRestrictions.Restrictions_.CreditLimit_;
+             bankAccount.DepositTimer = bank.TermsAndRestrictions.Restrictions_.DepositTimer_;
+             bankAccount.DebitInterest = bank.TermsAndRestrictions.Terms_.DebitInterest_;
+             bankAccount.FirstDepositInterest = bank.TermsAndRestrictions.Terms_.FirstDepositInterest_;
+             bankAccount.SecondDepositInterest = bank.TermsAndRestrictions.Terms_.SecondDepositInterest_;
+             bankAccount.ThirdDepositInterest = bank.TermsAndRestrictions.Terms_.ThirdDepositInterest_;
+             Console.WriteLine("\t\tit was correct\n");
+        }
+
+        private void BankSettingsUnverifyLegacy(TypeOfBankAccount bankAccount, Bank bank)
+        {
+            BankSettingsVerifyLegacy(bankAccount, bank);
+            bankAccount.MoneyGettingLimit = bank.UnverifiedTermsAndRestrictions.GettingLimit;
+            bankAccount.CreditLimit = bank.UnverifiedTermsAndRestrictions.UnverifyCreditLimit;
         }
     }
 }
