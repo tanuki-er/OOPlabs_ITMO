@@ -6,20 +6,21 @@ namespace Banks.ClientSystem
 {
     public class Client
     {
-        public Client(string firstName, string secondName)
+        /*public Client(string firstName, string secondName)
         {
             FirstName = firstName;
             SecondName = secondName;
-        }
+        }*/
 
-        public Client(string firstName, string secondName, string address, string passport)
+        /*public Client(string firstName, string secondName, string address, string passport)
             : this(firstName, secondName)
         {
             Address = address;
             Passport = passport;
-        }
+        }*/
 
-        public string ClientName { get => FirstName + " " + SecondName; }
+        public string ClientName { get => FirstName; set => FirstName = value; }
+        public string ClientSurname { get => SecondName; set => SecondName = value; }
         public string ClientAddress { get => Address; set => Address = value; }
         public string ClientPassport { get => Passport; set => Passport = value; }
         public Dictionary<Bank, TypeOfBankAccount> BankAccountsList { get => BankAccountsListPrivate; }

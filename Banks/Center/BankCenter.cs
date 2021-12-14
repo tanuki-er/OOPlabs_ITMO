@@ -10,8 +10,8 @@ namespace Banks.Center
 {
     public class BankCenter
     {
+        public Dictionary<Bank, Client> BankCenterDictionary { get => BankCenterClientsDictionaryPrivate; }
         private Dictionary<Bank, Client> BankCenterClientsDictionaryPrivate { get; set; } = new Dictionary<Bank, Client>();
-        /*private TypeOfBankAccount TypeOfBankAccount { get; set; }*/
 
         public void AddClientToTheBank(Bank bank, Client client)
         {
@@ -63,7 +63,6 @@ namespace Banks.Center
             foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
             {
                 if (key != bank || value != client) continue;
-                /*throw new BanksException("Fatal ERROR: incorrect Bank or Client");*/
                 foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
                 {
                     Console.Write("\tTotal score: {0} + {1} -> ", variable.Value.Score, money);
@@ -87,9 +86,17 @@ namespace Banks.Center
                         throw new BanksException("ERROR: Your account status -> didn't verified");
                     if (variable.Value.AccountType == accountType)
                     {
-                        Console.Write("\tTotal score: {0} - {1} -> ", variable.Value.Score, money);
-                        variable.Value.TakeMoney(variable.Value, money);
-                        Console.WriteLine(variable.Value.Score);
+                        if (variable.Value.AccountType == AccountType.Credit && money < variable.Value.Score + variable.Value.CreditLimit)
+                        {
+                            Console.Write("\tTotal score: {0} - {1} -> ", variable.Value.Score, money);
+                            if (variable.Value.Score < 0)
+                            {
+                                variable.Value.TakeMoney(variable.Value, money);
+                                variable.Value.TakeMoney(variable.Value, money * variable.Value.CreditCommission);
+                            }
+
+                            Console.WriteLine(variable.Value.Score);
+                        }
                     }
                 }
             }
@@ -176,6 +183,58 @@ namespace Banks.Center
             else
             {
                 throw new BanksException("ERROR: something was wrong. Try again later");
+            }
+        }
+
+        public void TimeSkipper(int dayCounter)
+        {
+            foreach ((Bank key, Client value) in BankCenterClientsDictionaryPrivate)
+            {
+                foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
+                {
+                    if (variable.Value.DepositTimer >= dayCounter)
+                    {
+                        variable.Value.DepositTimer -= dayCounter;
+                    }
+
+                    if (variable.Value.DepositTimer < dayCounter)
+                    {
+                        dayCounter = variable.Value.DepositTimer;
+                        variable.Value.DepositTimer = 0;
+                    }
+
+                    for (int i = 0; i < dayCounter; i++)
+                    {
+                        switch (variable.Value.AccountType)
+                        {
+                            case AccountType.Deposit:
+                            {
+                                if (variable.Value.Score <= 40000)
+                                    variable.Value.InterestScore += variable.Value.Score * variable.Value.FirstDepositInterest;
+                                if (variable.Value.Score > 40000 && variable.Value.Score <= 80000)
+                                    variable.Value.InterestScore += variable.Value.Score * variable.Value.SecondDepositInterest;
+                                if (variable.Value.Score > 80000)
+                                    variable.Value.InterestScore += variable.Value.Score * variable.Value.FirstDepositInterest;
+                                break;
+                            }
+
+                            case AccountType.Debit:
+                                variable.Value.InterestScore += variable.Value.Score * variable.Value.DebitInterest;
+                                break;
+
+                            case AccountType.Credit:
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+
+                        if (i % 30 == 0)
+                        {
+                            variable.Value.Score += variable.Value.InterestScore;
+                            variable.Value.InterestScore = 0;
+                        }
+                    }
+                }
             }
         }
 
