@@ -100,8 +100,6 @@ namespace Banks.Center
                     }
                 }
             }
-
-            Console.WriteLine("Money getting part work correctly\n");
         }
 
         public void SendMyMoney(Bank myBank, Bank friendlyBank, AccountType myAccountType, Client myClient, Client friend, double money)
@@ -112,7 +110,6 @@ namespace Banks.Center
             {
                 if (value == friend && value.BankAccountsList.ContainsKey(friendlyBank))
                 {
-                    Console.WriteLine("the friend was founded correctly");
                     foreach (KeyValuePair<Bank, TypeOfBankAccount> variable in value.BankAccountsList)
                     {
                         if (variable.Key == friendlyBank && variable.Value.AccountType == AccountType.Debit)
@@ -140,7 +137,6 @@ namespace Banks.Center
                 foreach (Client variable in BankCenterClientsDictionaryPrivate.Values)
                     if (variable == friend) friend.Logs.Add(myClient, money);
                 Console.WriteLine(myAccount.Score + "\n\t");
-                Console.WriteLine("Money sending part work correctly");
             }
             else
             {
@@ -178,7 +174,6 @@ namespace Banks.Center
                 Console.Write("\tTotal score: {0} + {1} -> ", myAccount.Score, money);
                 myAccount.ReturnMoney(myAccount, friendAccount, money);
                 Console.WriteLine(myAccount.Score);
-                Console.WriteLine("Money returning part work correctly");
             }
             else
             {
@@ -261,7 +256,7 @@ namespace Banks.Center
                 }
             }
 
-            Console.WriteLine("Account was added");
+            Console.WriteLine("\tAccount was added");
         }
 
         private void BankSettingsVerifyLegacy(TypeOfBankAccount bankAccount, Bank bank)
@@ -273,7 +268,6 @@ namespace Banks.Center
              bankAccount.FirstDepositInterest = bank.TermsAndRestrictions.Terms_.FirstDepositInterest_;
              bankAccount.SecondDepositInterest = bank.TermsAndRestrictions.Terms_.SecondDepositInterest_;
              bankAccount.ThirdDepositInterest = bank.TermsAndRestrictions.Terms_.ThirdDepositInterest_;
-             Console.WriteLine("\t\tit was correct\n");
         }
 
         private void BankSettingsUnverifyLegacy(TypeOfBankAccount bankAccount, Bank bank)

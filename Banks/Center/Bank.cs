@@ -1,5 +1,4 @@
-﻿using System;
-using Banks.Center.BankTermsAndRestrictions;
+﻿using Banks.Center.BankTermsAndRestrictions;
 using Banks.Center.CoR;
 
 namespace Banks.Center

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Banks.Center.CoR
+﻿namespace Banks.Center.CoR
 {
     public abstract class AbstractHandler : IHandler
     {

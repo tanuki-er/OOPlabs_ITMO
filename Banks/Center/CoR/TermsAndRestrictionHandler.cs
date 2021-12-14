@@ -15,7 +15,6 @@ namespace Banks.Center.CoR
         private Restrictions Restrictions { get; set; }
         public override Bank BankHandle(Bank request)
         {
-            Console.WriteLine("BankHandler was doing");
             request.TermsAndRestrictions.Terms_ = Terms;
             request.TermsAndRestrictions.Restrictions_ = Restrictions;
             return request;

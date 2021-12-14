@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using Banks.BankSystem.BankService;
+using Banks.BankSystem.Methods;
 using Banks.Center;
 using Banks.Center.CoR;
 using Banks.ClientSystem;
@@ -9,26 +9,19 @@ namespace Banks
 {
     internal static class Program
     {
-/*        private static BankCenter bankCenter = new BankCenter();
-        private static void MethodsMenu(Bank bank, Client client, AccountType accountType, double money)
-        {
-            foreach ((Bank key, Client value) in bankCenter.BankCenterDictionary)
-            {
-                if (bank == key && client == value) continue;
-            }
+        private static BankCenter bankCenter = new BankCenter();
 
+        private static void MethodsMenu(Bank bank, Client client, AccountType accountType, Bank fBank, Client fClient, double money)
+        {
+            Console.WriteLine("\n\tWhat would you do?");
+            Console.WriteLine("\n\t1) Get or Add money\n\t2) Send or Return money");
             switch (Console.ReadLine())
             {
-                case "Add":
-                    bankCenter.AddMoney(bank, client, accountType, money);
+                case "1":
+                    GetOrAddMoneyMenu(bank, client, accountType, money);
                     break;
-                case "Get":
-                    bankCenter.GetMoney(bank, client, accountType, money);
-                    break;
-                case "Send":
-                    /*bankCenter.SendMyMoney(bank,);
-                    break;
-                case "Return":
+                case "2":
+                    ManipulationWithMoneyMenu(bank, client, accountType, fBank, fClient, money);
                     break;
                 default:
                     Console.WriteLine("Wrong Answer");
@@ -36,39 +29,43 @@ namespace Banks
             }
         }
 
-        private static Client ClientMenu(Client client)
+        private static void GetOrAddMoneyMenu(Bank bank, Client client, AccountType accountType, double money)
         {
-            Console.WriteLine("What do you want to add?\n1)Address\n2)Passport\n3)Nothing");
+            Console.WriteLine("\t1) Add money\n\t2) Get money\n");
             switch (Console.ReadLine())
             {
                 case "1":
-                {
-                    Console.WriteLine("Your Address:");
-                    client.ClientAddress = Console.ReadLine();
+                    bankCenter.AddMoney(bank, client, accountType, money);
                     break;
-                }
-
                 case "2":
-                {
-                    Console.WriteLine("Your Passport:");
-                    client.ClientPassport = Console.ReadLine();
-                    break;
-                }
-
-                case "3":
+                    bankCenter.GetMoney(bank, client, accountType, money);
                     break;
                 default:
                     Console.WriteLine("Wrong Answer");
                     break;
             }
+        }
 
-            return client;
+        private static void ManipulationWithMoneyMenu(Bank bank, Client client, AccountType accountType, Bank fBank, Client fClient, double money)
+        {
+            Console.WriteLine("\t1) Send money\n\t2) Return your money");
+            switch (Console.ReadLine())
+            {
+                case "1":
+                    bankCenter.SendMyMoney(bank, fBank, accountType, client, fClient, money);
+                    break;
+                case "2":
+                    bankCenter.ReturnMyMoney(bank, fBank, accountType, client, fClient, money);
+                    break;
+                default:
+                    Console.WriteLine("Wrong Answer");
+                    break;
+            }
         }
 
         private static AccountType AccountTypeMenu()
         {
-            Console.WriteLine("What account type dou you want to create in the bank?");
-            Console.WriteLine("1) Credit Account\n2) Debit Account\n3) Deposit Account");
+            Console.WriteLine("\n\t1) Credit Account\n\t2) Debit Account\n\t3) Deposit Account");
             AccountType accountType = AccountType.Debit;
             switch (Console.ReadLine())
             {
@@ -89,65 +86,71 @@ namespace Banks
             return accountType;
         }
 
-        private static void Menu()
+        private static Bank BankCreating(string name)
         {
-            Console.WriteLine("1) Create Client and Add it to the bank\n2) Do Something");
+            var bank = new Bank("name");
+            var handler = new TermsAndRestrictionHandler(0.04, 0.03, 0.04, 0.06, 90, 10000, 0.02);
+            var uhandler = new UnverifiedHandler(10000, 0);
+            handler.SetNext(uhandler);
+            return bank.AddTermsAndRestrictions(handler);
+        }
+
+        private static Client ClientMenu()
+        {
+            var builder = new ConcreteBuilder();
+            Console.WriteLine("\n\tAdd your name & Surname");
+            Console.WriteLine("\tYour name: ");
+            string name = Console.ReadLine();
+            Console.WriteLine("\tYour surname: ");
+            string surname = Console.ReadLine();
+            builder.AddingName(name, surname);
+            Console.WriteLine("\n\tWhat do you want to add?\n\t1) Address\n\t2) Passport\n\t3) Nothing");
             switch (Console.ReadLine())
             {
                 case "1":
                 {
-                    Console.WriteLine("First Bank name: ");
-                    var bank = new Bank(Console.ReadLine());
-                    bank.AddTerms(0.01, 0.04, 0.05, 0.06);
-                    bank.AddRestrictions(90,  20000,  0.04);
-                    bank.AddUnverifiedTermsAndRestrictions(0, 10);
-                    Console.WriteLine("Second Bank Name");
-                    var secondBank = new Bank(Console.ReadLine());
-                    secondBank.AddTerms(0.02, 0.04, 0.1, 0.12);
-                    secondBank.AddRestrictions(180, 10000, 0.1);
-                    var client = new Client("mikailov", "mika");
-                    client = ClientMenu(client);
-                    bankCenter.AddNewAccount(bank, AccountTypeMenu(), client);
+                    Console.WriteLine("\tYour Address: ");
+                    builder.AddingAddress(Console.ReadLine());
                     break;
                 }
 
                 case "2":
                 {
-                    MethodsMenu();
-                    Console.WriteLine("Do you want to add Address or Passport? (y/n)");
-                    string readLine = Console.ReadLine();
-                    if (readLine == "y")
-                        client = ClientMenu(client);
-                    if (readLine == "n") Console.WriteLine(" Okay\n");
+                    Console.WriteLine("\tYour Passport: ");
+                    builder.AddingPassport(Console.ReadLine());
                     break;
                 }
 
                 case "3":
                     break;
                 default:
-                    return;
+                    Console.WriteLine("\tWrong Answer");
+                    break;
             }
+
+            return builder.GetClient();
         }
-*/
+
         private static void Main()
         {
-            Bank bank = new Bank("name");
-            var handler = new TermsAndRestrictionHandler(0, 0, 0, 0, 0, 0, 0);
-            var uhandler = new UnverifiedHandler(0, 0);
-            handler.SetNext(uhandler);
-            bank.AddTermsAndRestrictions(handler);
-            /*Menu();*/
-            /*bankCenter.AddClientToTheBank(bank, client);
-            bankCenter.AddNewAccount(bank, AccountType.Debit, client);
-            bankCenter.AddMoney(bank, client, AccountType.Debit, 1000);
-            /*you are here*/
-            /*bankCenter.GetMoney(bank, client, AccountType.Debit, 100);
-            var secondClient = new Client("Ibrogimov", "Djonibeck", "some address", "some passport");
+            Console.WriteLine("\tAdd your bank!\n\tWrite the bank name:");
+            Bank bank = BankCreating(Console.ReadLine());
+            Console.WriteLine("\n\tCreate your account!:");
+            Client client = ClientMenu();
+            bankCenter.AddClientToTheBank(bank, client);
+            Console.WriteLine("\tCongratulations! You was added to your bank!");
+            Console.WriteLine("\n\tWhat account type do you want to create? ");
+            AccountType accountType = AccountTypeMenu();
+            Console.WriteLine("\tNow your account will add to this bank: ");
+            bankCenter.AddNewAccount(bank, accountType, client);
+            Console.WriteLine("\tWe finished registration!");
+            Bank secondBank = BankCreating("SecondBank");
+            var secondClient = new Client();
+            secondClient.ClientName = "Some";
+            secondClient.ClientSurname = "name";
             bankCenter.AddClientToTheBank(secondBank, secondClient);
             bankCenter.AddNewAccount(secondBank, AccountType.Debit, secondClient);
-            /*text*/
-            /*bankCenter.SendMyMoney(bank, secondBank, AccountType.Debit, client, secondClient, 500);
-            bankCenter.ReturnMyMoney(bank, secondBank, AccountType.Debit, client, secondClient, 500);*/
+            MethodsMenu(bank, client, accountType, secondBank, secondClient, 0);
         }
     }
 }
