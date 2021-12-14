@@ -7,7 +7,7 @@
 
         public void BuildMinimumClient(string name, string surname)
         {
-            this.BuilderB.AddingName(name, surname);
+            BuilderB.AddingName(name, surname);
         }
 
         public void BuildFullClient(string name, string surname, string address, string passport)

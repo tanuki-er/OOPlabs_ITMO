@@ -132,12 +132,10 @@ namespace Banks
         private static void Main()
         {
             Bank bank = new Bank("name");
-            var handler = new TermsAndRestrictionHandler();
-            var uhandler = new UnverifiedHandler();
+            var handler = new TermsAndRestrictionHandler(0, 0, 0, 0, 0, 0, 0);
+            var uhandler = new UnverifiedHandler(0, 0);
             handler.SetNext(uhandler);
             bank.AddTermsAndRestrictions(handler);
-
-
             /*Menu();*/
             /*bankCenter.AddClientToTheBank(bank, client);
             bankCenter.AddNewAccount(bank, AccountType.Debit, client);

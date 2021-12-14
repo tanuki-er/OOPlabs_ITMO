@@ -1,4 +1,5 @@
-﻿using Banks.Center.BankTermsAndRestrictions;
+﻿using System;
+using Banks.Center.BankTermsAndRestrictions;
 using Banks.Center.CoR;
 
 namespace Banks.Center
@@ -14,14 +15,20 @@ namespace Banks.Center
 
         public string Name { get => NamePrivate; }
         public BankTermsAndRestrictions.BankTermsAndRestrictions TermsAndRestrictions { get => BankTermsAndRestrictions; }
-        public UnverifiedTermsAndRestrictions UnverifiedTermsAndRestrictions { get => UnverifiedBankTermsAndRestrictions; }
+        public UnverifiedTermsAndRestrictions UnverifiedTermsAndRestrictions
+        {
+            get => UnverifiedBankTermsAndRestrictions;
+            set => UnverifiedBankTermsAndRestrictions = value;
+        }
+
         private string NamePrivate { get; }
         private BankTermsAndRestrictions.BankTermsAndRestrictions BankTermsAndRestrictions { get; set; }
         private UnverifiedTermsAndRestrictions UnverifiedBankTermsAndRestrictions { get; set; }
 
-        public void AddTermsAndRestrictions(AbstractHandler verified)
+        public Bank AddTermsAndRestrictions(AbstractHandler verified)
         {
-            var result = verified.BankHandle()
+            Bank bank = verified.BankHandle(this);
+            return bank;
         }
 
         public void AddTerms(double debitInterest, double first, double second, double third)
