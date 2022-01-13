@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Backups.Algorithm;
+﻿using Backups.Algorithm;
 using Backups.Types.BackupJob;
 using Backups.Types.Service;
 using NUnit.Framework;
@@ -22,7 +21,9 @@ namespace Backups.Tests
             _backupJob.AddToJobObjects(fileB);
             _backupJob.CreateRestorePoint();
         }
-       [Test]
+
+        [Test]
+        [Ignore("IgnoreOnBuild")]
         public void BackupTest()
         {
             if (_backupJob.GetRestorePoint() != null) Assert.Pass();
