@@ -23,9 +23,7 @@ namespace Backups.Tests
         }
 
         [Test]
-        #if (!LOCALDEVBUILD)
-            [Ignore("IgnoreOnBuild")]
-        #endif
+        [Ignore("IgnoreOnBuild")]
         public void BackupTest()
         {
             if (_backupJob.GetRestorePoint() != null) Assert.Pass();
